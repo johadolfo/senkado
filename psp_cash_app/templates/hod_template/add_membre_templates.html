@@ -1,0 +1,194 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+AJOUTER Employe
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Ajouter Employe</h3>
+                      </div>
+
+                      <form role="form" action="/add_membre_save" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="card-body">
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th> <label>Email</label>
+                                    <input type="email" class="form-control" name="email" placeholder="Entrer l'email "></th>
+                                    <input type="hidden"  name="muso_id" value="{{ user.muso.id }}">
+                                    <th>  <label>Password </label>
+                                        <input type="password" class="form-control" name="password" placeholder="Entrer le password "></th>
+                                  </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th><label>Code Employe </label>
+                                    <input type="text" class="form-control" name="code_employe" placeholder="Entrer le code de l'employe "></th>
+                                    <th><label>Nom </label>
+                                      <input type="text" class="form-control" name="nom" placeholder="Entrer le nom de l'employe "></th>
+                                    <th><label>Prenom</label>
+                                    <input type="text" class="form-control" name="prenom" placeholder="Entrer le prenom de l'employe "></th>
+                                  </tr>
+                                  
+                                </thead>
+                            </table>
+                          </div>
+
+                          
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                              <thead>
+                                <tr>
+                                  <th><label>Sexe/label>
+                                  <select class="form-control"   name="sexe">
+                                    <option value="Feminin">Feminin</option>
+                                    <option value="Masculin">Masculin</option>
+                                  </select>
+                                </th>
+                                  <th><label>CIN </label>
+                                  <input type="text" class="form-control" name="cin" placeholder="Entrer le cin de l'employe "></th>
+                                  <th><label>NIF </label>
+                                  <input type="text" class="form-control" name="nif" placeholder="Entrer le nif de l'employe "></th>  
+                                </tr>
+                              </thead>
+                          </table>
+                           
+                          </div>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th><label>Adresse</label>
+                                    <input type="text" class="form-control" name="adresse" placeholder="Entrer l'adresse "></th>
+                                    <th><label>Telephone Mobile </label>
+                                    <input type="text" class="form-control" name="tel_mobile" placeholder="Entrer le telephone mobile de l'employe "> </th>
+                                    <th> <label>Telephone House </label>
+                                     <input type="text" class="form-control" name="tel_house" placeholder="Entrer le telephone house de l'employe "></th>
+                                </tr>
+                                </thead>
+                            </table>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th><label>Credit Limit</label>
+                                    <input type="text" class="form-control" name="credit_limit" placeholder="Entrer le credit limiter par l'employer "></th>
+                                    <th><label>Account </label>
+                                    <input type="text" class="form-control" name="account" placeholder="Entrer le montant de l'acocount de l'employe "></th>
+                                    <th><label>Profile Pic</label>
+                                      <input type="file" class="form-control" Required name="profile_pic">
+                                    </th>
+                                  </tr>
+                                </thead>
+                            </table>
+                          </div>
+
+                          <div class="form-group">
+                            {% if messages %}
+                            <div class="col-12">
+                              {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                              <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% if message.tags == 'success' %}
+                              <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-block">Add Membre</button>
+                        </div>
+                      </form>
+                      <!-- /.card-header -->
+                      <!-- form start -->
+                      <!-- {% url 'add_membre_save' as action_path %}
+                     {% include 'hod_template/form_template.html' with  messages=messages form=form action_path=action_path  button_text="Ajouter Membre" %} -->
+              </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      {% endblock main_content %}
+      {% block custom_js %}
+  <script>
+      $(document).ready(function(){
+        $("#id_email").keyup(function(){
+            var email=$(this).val();
+            if(email!=""){
+              $.ajax({
+                url:'{% url "check_email_exist" %}',
+                type:'POST',
+                data:{email:email}
+              })
+              .done(function(response){
+                console.log(response);
+                if(response=="True"){
+                  $(".email_error").remove();
+                  $("<span class='email_error' style='padding:5px;color:red; font-weight:bold;'> Email Not AVailable </span>").insertAfter("#id_email");
+                }
+                else{
+                  $(".email_error").remove();
+                  $("<span class='email_error' style='padding:5px;color:green; font-weight:bold;'> Email  AVailable </span>").insertAfter("#id_email");
+                }
+                })
+              .fail(function(){
+                console.log("failed");
+              })
+          }
+          else{
+              $(".email_error").remove();
+          }
+        });
+
+        $("#codep").keyup(function(){
+            var codep=$(this).val();
+
+            if(codep!=""){
+              $.ajax({
+                url:'{% url "check_codep_exist" %}',
+                type:'POST',
+                data:{codep:codep}
+              })
+              .done(function(response){
+                console.log(response);
+                if(response=="True"){
+                  $(".codep_error").remove();
+                  $("<span class='codep_error' style='padding:5px;color:red; font-weight:bold;'> Username Not AVailable </span>").insertAfter("#id_username");
+                }
+                else{
+                  $(".codep_error").remove();
+                  $("<span class='codep_error' style='padding:5px;color:green; font-weight:bold;'> Username  AVailable </span>").insertAfter("#id_username");
+                }
+                })
+              .fail(function(){
+                console.log("failed");
+              })
+          }
+          else{
+              $(".codep_error").remove();
+          }
+          
+        });
+     });
+  </script>
+      {% endblock custom_js %}

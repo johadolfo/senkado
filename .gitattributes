@@ -1,0 +1,19 @@
+# Normaliser les fins de ligne pour les fichiers texte
+* text=auto
+
+# Garder les fins de ligne LF pour les fichiers de configuration
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+
+# Garder les fins de ligne CRLF pour les fichiers Windows
+*.bat text eol=crlf
+
+# Fichiers binaires
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary

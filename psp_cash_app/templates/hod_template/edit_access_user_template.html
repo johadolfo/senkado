@@ -1,0 +1,55 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %}
+    Donnez Access a un Utilisateur
+{% endblock page_title %}
+
+{% block main_content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Donnez Access a un Utilisateur</h3>
+                        </div>
+                        <div style="margin-left: 1%;">
+                            <form id="form1" action="#" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="type">LISTE DES UTILISATEURS AYANT DES DROITS</label>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Prenom</th>
+                                            <th>Nom</th>
+                                            <th>Droit Access</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for permiss in permission_info %}
+                                            <tr>
+                                                <td>{{ permiss.id }}</td>
+                                                <td>{{ permiss.first_name }}</td>
+                                                <td>{{ permiss.last_name }}</td>
+                                                <td>{{ permiss.name }}</td>
+                                                <td><a href="#">Supprimer</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <button type="submit" class="btn btn-primary btn-block">Add Cotisation</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock main_content %}
+
+{% block custom_js %}
+    <!-- Add any custom JavaScript here -->
+{% endblock custom_js %}

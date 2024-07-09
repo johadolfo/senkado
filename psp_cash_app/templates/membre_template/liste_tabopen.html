@@ -1,0 +1,90 @@
+{% extends 'membre_template/base_template.html' %}
+{% block page_title %} 
+LIST OF TAB OPEN
+{% endblock page_title %}
+{% block main_content %}
+<style>
+
+    .custom-btn {
+        font-size: 14px; /* Taille de police plus petite */
+        padding: 6px 12px; /* Espacement intérieur plus petit */
+        height: auto; /* Hauteur automatique pour s'adapter au contenu */
+        line-height: 1; /* Réduction de l'espacement entre les lignes */
+    }
+</style>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Tab Open Details</h3>
+                    
+                      <div class="card-tools">
+                        <form>
+                          <div class="input-group input-group-sm" style="width: 150px;">
+                            <input type="text" name="q" class="form-control float-right" placeholder="Search">
+
+                            <div class="input-group-append">
+                              <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                              <a href="{% url 'manage_membres' %}" class="btn btn-dark" style="margin-left: 2px";><i class="fas fa-sync-alt"></i></a>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="container">
+                      <div class="row">
+                          {% for tabopen in opentap_info %}
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
+                                  <button class="btn btn-primary btn-lg btn-block custom-btn">
+                                      <div>{{ tabopen.0 }}</div>
+                                      <div>{{ tabopen.4 }}</div>
+                                      <div>{{ tabopen.8 }}</div>
+                                  </button>
+                              </div>
+                          {% endfor %}
+                      </div>
+                  </div>
+                    <!-- /.card-body -->
+                    <!-- Pagination -->
+                    
+                   <nav class="mt-4">
+                    {% if rembs.has_other_pages %}
+                    <ul class="pagination justify-content-left">
+                      {% if rembs.has_previous %}
+                      <a href="?page= 1 " class="btn btn-outline-primary mb-4" style="width: 60px; border-radius:1px; border:1px solid #d3d3d3;">First</a>
+                      <li class="page-item"><a class="page-link" href="?page={{ rembs.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a></li>
+                      {% else %}
+                      <li class="page-item disabled"></li>
+                      {% endif %}
+                      
+                      {% for i in rembs.paginator.page_range %}
+                        {% if rembs.number == 1 %}
+                        <li class="page-item active"><span class="page-link">{{ i }}<span class="sr-only"></span></span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                      {% endfor %}
+
+                      {% if rembs.has_next %}
+                      <li class="page-item"><a class="page-link" href="?page={{ rembs.next_page_number }}" ><i class="fas fa-angle-double-right"></i></a></li>
+                      <a href="?page={{ rembs.paginator.num_pages }}" class="btn btn-outline-primary mb-4" style="width:60px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">Last</a>
+                      {% else %}
+                      <li class="page-item disabled"></li>
+                      {% endif %}
+                    </ul>
+                  {% endif %}
+                  </nav>
+                  </div>
+                  <!-- /.card -->
+                </div>
+              </div>
+            </div>
+        </div>
+    </section>
+      <!-- /.content -->
+{% endblock main_content %}

@@ -1,0 +1,132 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+Ajouter Departement
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Ajouter Departement</h3>
+                      </div>
+                      <form role="form" action="/add_departement_save" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="card-body">
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th> <label>Code Departement </label>
+                                    <input type="text" class="form-control" name="code_departement" placeholder="Entrer le code du departement "></th>
+                                  </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th> <label>Departement </label>
+                                    <input type="text" class="form-control" name="departement" placeholder="Entrer le nom du departement"></th>
+                                  </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                        <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th>
+                                    <input type="checkbox" id="option1" name="print_in_kitchen"  >
+                                    <label for="option1">Print in chicken</label><br>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                    <input type="checkbox" id="option2" name="print_in_bar" >
+                                    <label for="option2">Print in bar</label><br>
+                                    </th>
+                                </tr>   
+                                </thead>
+                            </table>
+                          </div>
+
+                          <div class="form-group">
+                            {% if messages %}
+                            <div class="col-12">
+                              {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                              <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% if message.tags == 'success' %}
+                              <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-block">Add Membre</button>
+                        </div>
+                      </form>
+                      <div class="card-header"> 
+                      Liste des Departements
+                     </div>
+
+                     <div class="card-body table-responsive p-0">
+                      <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            
+                            <th>Code Departement</th>
+                            <th>Departement</th>
+                            <th>Print in Kitchen</th>
+                            <th>Print in Bar 1</th>
+                            <th>Actien</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for departement in departement_info %}
+                          <tr>
+                            <td>{{ departement.code_departement }}</td>
+                            <td>{{ departement.departement }}</td>
+                            <td>{{ departement.print_in_kitchen }}</td>
+                            <td>{{ departement.print_bar }}</td>
+                            <td><a href="/edit_departement/{{ departement.code_departement }}" class="btn btn-success">Edit</a></td><td><a href="{% url 'supprimer_departement' departement.code_departement %}" class="btn btn-danger">Supprimer</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      {% endblock main_content %}
+      {% block custom_js %}
+<script>
+$(document).ready(function() {
+  $(".btn-danger").on("click", function(event) {
+    event.preventDefault(); // Empêche le lien de fonctionner immédiatement
+
+    // Afficher une boîte de dialogue de confirmation
+    var result = confirm("Voulez-vous vraiment supprimer cette cotisation ?");
+
+    // Si l'utilisateur clique sur "OK" dans la boîte de dialogue, rediriger vers la vue de suppression
+    if (result) {
+      window.location.href = $(this).attr("href");
+    }
+  });
+});
+</script>
+{% endblock custom_js %}

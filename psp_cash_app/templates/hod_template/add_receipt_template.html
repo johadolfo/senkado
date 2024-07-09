@@ -1,0 +1,1161 @@
+
+{% extends 'hod_template/base_template.html' %}
+{% load static %}
+{% block page_title %} 
+  Passer des Commandes
+{% endblock page_title %}
+{% block main_content %}
+<style>
+    .button-container {
+        max-width: 300px; /* Largeur maximale du conteneur */
+        margin: 0 auto; /* Centrage du conteneur */
+        margin-left: 10px;
+        margin-right: 10px;
+        position: relative;
+        top: 0;
+    }
+
+    #categoryButtonsContainer {
+        display: flex;
+        flex-wrap: wrap; /* Permet aux boutons de passer à la ligne lorsqu'ils atteignent la largeur maximale */
+    }
+
+    .categoryButton {
+        flex-basis: calc(50% - 10px); /* La base flexible est la moitié moins 10px pour l'espacement entre les colonnes */
+        max-width: calc(50% - 10px); /* La largeur maximale est la moitié moins 10px pour l'espacement entre les colonnes */
+        margin-bottom: 10px; /* Espacement entre les boutons */
+        background-color: #3498db; /* Couleur de fond */
+        color: #fff; /* Couleur du texte */
+        border: none; /* Supprime les bordures */
+        border-radius: 5px; /* Ajoute un peu de bordure arrondie */
+        padding: 10px; /* Ajoute un peu de rembourrage */
+        font-size: 16px; /* Taille de la police */
+        cursor: pointer; /* Afficher un curseur au survol */
+        transition: background-color 0.3s; /* Ajoute une transition douce pour le changement de couleur de fond */
+        margin-left: 10px;
+        margin-right: 10px;
+        white-space: normal;
+    }
+
+    .categoryButton:hover {
+        background-color: #2980b9; /* Changement de couleur de fond au survol */
+    }
+
+    /* Styles pour les boutons d'article */
+    .btn-success {
+        flex-grow: 1; /* Permettre aux boutons de s'étendre pour remplir l'espace disponible */
+        flex-shrink: 1; /* Permettre aux boutons de se réduire si nécessaire */
+        flex-basis: 0; /* Basé sur la taille du contenu */
+        max-width: 100%; /* Ajuster la largeur maximale si nécessaire */
+        margin: 5px; /* Espacement entre les boutons */
+    }
+
+    .btn-outline-primary {
+        flex-grow: 1; /* Permettre aux boutons de s'étendre pour remplir l'espace disponible */
+        flex-shrink: 1; /* Permettre aux boutons de se réduire si nécessaire */
+        flex-basis: 0; /* Basé sur la taille du contenu */
+        max-width: 100%; /* Ajuster la largeur maximale si nécessaire */
+        margin: 5px; /* Espacement entre les boutons */
+    }
+
+
+ 
+
+    /* Conteneur interne pour les boutons */
+    #articleButtonsContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Centre les boutons horizontalement */
+        gap: 10px; /* Espacement entre les boutons */
+    }
+
+    #openTabButtonsContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Centre les boutons horizontalement */
+        gap: 10px; /* Espacement entre les boutons */
+    }
+    
+    .articleButton:hover {
+        background-color: #2980b9; /* Changement de couleur de fond au survol */
+    }
+
+    .openTabButton:hover {
+        background-color: #2980b9; /* Changement de couleur de fond au survol */
+    }
+
+    /* Styles pour le conteneur du panier */
+    .button-container-article {
+    position: sticky; /* Assure un positionnement fixe des boutons */
+    top: 20px; /* Ajustez la position en fonction de vos besoins */
+    z-index: 999; /* Assure que les boutons sont au-dessus des autres éléments */
+    background-color: #fff; /* Fond blanc pour éviter les superpositions */
+    padding: 10px; /* Ajoutez un peu de rembourrage pour l'apparence */
+    margin-bottom: 20px; /* Ajoute un espacement en bas pour éviter les superpositions */
+    }
+
+    .button-container-openTab {
+            display: none; /* Caché par défaut */
+        }
+
+    
+
+  
+   
+
+    /* Styles pour le conteneur du panier */
+    .panier {
+        max-width: 300px; /* Ajustez la taille maximale du conteneur du panier */
+        margin: 0 auto; /* Centrer horizontalement */
+        margin-top: 20px; /* Espacement entre les catégories/articles et le panier */
+        background-color: #f9f9f9; /* Couleur de fond du panier */
+        padding: 10px; /* Ajouter un peu de rembourrage */
+        border-radius: 5px; /* Ajouter un peu de bordure arrondie */
+    }
+
+    /* Styles pour les boutons du panier */
+    .panier button {
+        width: 100%; /* Boutons de la largeur du conteneur */
+        margin-bottom: 5px; /* Espacement entre les boutons */
+    }
+
+    /* Styles pour les listes d'articles du panier */
+    .panier ul {
+        list-style-type: none; /* Supprimer les puces de liste */
+        padding: 0; /* Supprimer le remplissage par défaut */
+    }
+
+    /* Styles pour les éléments de liste du panier */
+    .panier ul li {
+        margin-bottom: 5px; /* Espacement entre les éléments de liste */
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+    }
+    .item-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .item-list li {
+      margin-bottom: 10px;
+    }
+
+    
+</style>
+  <!-- Main content -->
+  <section class="content" id="section">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Formulaires -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Ajouter Article Dans le Panier</h3>
+            </div>
+                                            {% for configuration_info in configuration_info %}
+                                            <input type="hidden" id="taxrecuperation" name="tax100" value="{{ configuration_info.tax_rate1}}">
+                                            {% endfor %}
+            
+              <!-- Contenu du formulaire -->
+              <div class="container">
+                <!-- Barre de recherche et boutons de vente -->
+                <div>
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                                <th>
+                                    <div class="card-tools">
+                                        <label>Selectionner le Type de Paiement</label>
+                                        <select id="typePaiementSelect" class="form-control" onchange="selectionnerTypePaiement()">
+                                                <option value="Cash">Cash</option>
+                                                <option value="US Cash">US Cash</option>
+                                                <option value="Account">Account</option>
+                                                <option value="Check">Check</option>
+                                                <option value="Complementary">Complementary</option>
+                                                <option value="Unicarte">Unicarte</option>
+                                                <option value="SogeCarte">SogeCarte</option>
+                                                <option value="Dollar Card">Dollar Card</option>
+                                                <option value="Zelle">Zelle</option>
+                                                <option value="Cash App">Cash App</option>
+                                                <option value="Natcash">Natcash</option>
+                                                <option value="Moncash">Moncash</option>
+                                                <option value="Split">Split</option>
+                                            </select>
+                                            </div>
+                                    <label>Item Barcode</label>
+
+                                    <form>
+                                        <div class="input-group input-group-sm" style="width: 500px;">
+                                        
+                                        <input type="text" id="searchInput" class="form-control float-left" placeholder="Search">
+                                        <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                        <a href="{% url 'manage_article' %}" class="btn btn-dark" style="margin-left: 2px";><i class="fas fa-sync-alt"></i></a>
+                                        </div>
+                                        </div>
+                                  </form>
+                                </th>
+                                <th>
+                                    <label>Quantity Tab Open Progress</label>
+                                    <input type="text" class="form-control" name="tap_open" value ="{{ opened_receipt_count}}" ><br>
+                                    <button type="button" class="btn btn-primary btn-block" id="open-tab">View Open Tab</button>
+                                   
+                                    
+                                   
+                                </th>
+                                
+                                <th>
+
+                                    <form role="form" id="holdReceiptForm" action="{% url 'hold_receipt' %}" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="hidden" id="panierDataInputHoldReceipt" name="panier_data">
+                                        <button type="submit" id="holdReceiptButton" class="btn btn-primary btn-block" onclick="soumettrePanierHRF('holdReceiptForm')">Hold Receipt</button><br>
+                                        <!-- Contenu du formulaire -->
+                                            <input type="hidden" id="taxInput" name="tax" value="0.00">
+                                            <input type="hidden" id="serviceChargeInput" name="service_charge" value="0.00">
+                                            <input type="hidden" id="discountInput" name="discount" value="0.00">
+                                            <input type="hidden" id="montantTTCInput" name="montant_ttc" value="0.00">
+                                            <input type="hidden" id="quantitetot" name="quantitetot" value="0.00">
+                                            <input type="hidden" id="cout_total" name="couttotal" value="0.00">
+                                            <input type="hidden" id="depositinput" name="deposit" value="0.00">
+                                            <input type="hidden" id="balanceinput" name="balance" value="0.00">
+
+                                            <input type="hidden" id="hiddentab-input" name="selected_tab_open" value="">
+                                            <input type="hidden" id="hiddentab_receipt_id" name="receipt_id_holdtab" value="">
+                                            <input type="hidden" id="date_paie_hold" name="date_paie_hold" value="">
+                                    </form>
+                                    <button type="button" id="bouton-ok" class="btn btn-primary btn-block" onclick="imprimerRecu()">Void Receipt</button>
+                                    
+                                 </th>
+                        </tr>
+                        </thead>
+                        </table>
+                </div>
+                
+                <div class="button-container-openTab">
+                    <div id="openTabButtonsContainer">
+                        {% for opt in opentap %}
+                            <a href="#" onclick="showInPanier('{{ opt.0 }}')" class="btn btn-outline-primary">{{ opt.0 }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                      <tr>
+           
+               
+                <!-- Articles -->
+                     <th>
+                    <div class="button-container-article">
+                        <div id="articleButtonsContainer">
+                            {% for article in articles %}
+                            <a href="#" onclick="ajouterAuPanier('{{ article.id }}', '{{ article.description }}', '{{ article.prix }}',  '{{ article.cout_unit }}')" class="btn btn-success">{{ article.description }}</a>
+
+                             <!--<button onclick="ajouterAuPanier('{{ article.code_articl }}', '{{ article.description }}', {{ article.prix }})"> {{ article.description }}</button> -->
+                           <!--<a href="/remplirPanier/{{ article.code_articl }}" class="btn btn-success" data-prix="{{ article.prix }}">{{ article.description }}</a>-->
+                            {% endfor %}
+                        </div>
+                    </div>
+                   
+                </th> 
+                <!-- Liste des items et informations -->
+                <th>
+                
+                <div class="button-container-article">
+                    <div id="articleButtonsContainer">
+                    <h2>Panier</h2>
+                    
+                            <table id="panier">
+                              <thead>
+                                <tr>
+                                  <th>Code</th>
+                                  <th>Nom</th>
+                                  <th>Quantité</th>
+                                  <th>Prix Unité</th>
+                                  <th>Prix Total</th>
+                                  <th>Action</th>
+                                  
+                                 </div>
+                                </tr>
+                              </thead>
+                              <tbody id="panier-body">
+                               
+                              </tbody>
+                            </table>
+                            
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                        
+                                        <th><button type="button" class="btn btn-primary btn-block" onclick="faireUnDepot()" >Deposit</button><br>
+                                        <button type="button" class="btn btn-primary btn-block" onclick="ajouterCharges()">Service Charges</button></th>
+                                        <input type="hidden" id="typepaiement" name="type_paiement" value="">
+
+                                        <th>
+                                        
+                                        <button type="button" class="btn btn-primary btn-block" onclick="ajouterRabais()">Receipt Discount</button><br>
+                                        <form role="form" id="paymentForm" action="{% url 'payer_panier' %}" method="post" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <input type="hidden" id="panierDataInputPayment" name="panier_data">
+                                            
+                                         
+                                             
+                                        <button type="submit"  id="payerButton" class="btn btn-primary btn-block" onclick="soumettrePanier('paymentForm')">Payer</button>
+                                                         
+                                        <!-- Contenu du formulaire -->
+                                        
+                                        
+                                            <input type="hidden" id="taxInputclose" name="tax1" value="{{ configuration_info.tax_rate1}}">
+                                            <input type="hidden" id="serviceChargeInputclose" name="service_charge1" value="0.00">
+                                            <input type="hidden" id="discountInputclose" name="discount1" value="0.00">
+                                            <input type="hidden" id="montantTTCInputclose" name="montant_ttc1" value="0.00">
+                                            <input type="hidden" id="quantitetotclose" name="quantitetot1" value="0.00">
+                                            <input type="hidden" id="cout_totalclose" name="couttotal1" value="0.00">
+                                            <input type="hidden" id="depositclose" name="deposit1" value="0.00">
+                                            <input type="hidden" id="balanceclose" name="balance1" value="0.00">
+                                            <input type="hidden" id="typePaiementInput" name="typepaiement" value="Cash">
+                                            
+                                            <input type="hidden" id="hidden-input" name="selected_tab" value="">
+                                            <input type="hidden" id="hidden_receipt_id" name="receipt_id_hold" value="">
+
+                                            <input type="hidden" id="montantDonneInput" name="montant_donne" value="">
+                                            <input type="hidden" id="montantMonnaieInput" name="montant_monnaie" value="">
+                                            <input type="hidden" id="date_paie" name="date_paie" value="">
+
+                                            
+                                            
+                                        </form>
+                                        
+                                        
+                                        </th>
+                                        
+
+                                        <th>
+                                            <hr>
+                                            <p>Montant Hors Taxe:</p>
+                                            <p>TCA:</p>
+                                            <p>Service Charges:</p>
+                                            <p>Rabais:</p>
+                                            <p>Montant TTC:</p>
+                                            <p>Balance:</p>
+                                            <p>Deposit:</p>
+                                        </th>
+                                        <th>
+                                            <p><span id="total">0.00</span></p>
+                                            <p><span id="tax">0.00</span></p>
+                                            <p><span id="service_charge">0.00</p>
+                                            <p><span id="discount">0.00</p>
+                                            <p><span id="montant_ttc">0.00</p>
+                                            <p><span id="balance">0.00</p>
+                                            <p><span id="deposit">0.00</p>
+                                               
+                                        </th>
+                                        
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        </div>
+                    </th>
+               
+                    
+                </tr>
+            </thead>
+        </table>
+              
+             
+              <!-- /.card-body -->
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Detail Rcu-->
+  <style>
+    /* Style de la fenêtre modale */
+    .modal {
+        display: none; /* Masquer la fenêtre modale par défaut */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+    }
+
+    /* Contenu de la fenêtre modale */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 0 auto;
+        padding: 10px;
+        border: 1px solid #888;
+        width: 220px; /* Taille du reçu pour l'impression POS */
+    }
+
+    /* Bouton pour fermer la fenêtre modale */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Autres styles */
+    .receipt-container {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        margin: 0;
+        padding: 0;
+    }
+    .logo {
+        max-width: 100px; /* Ajustez la taille du logo si nécessaire */
+        display: block;
+        margin: auto;
+    }
+    
+    .receipt-items th, .receipt-items td {
+        padding: 5px;
+    }
+</style>
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="receipt-container">
+            <div class="receipt-header">
+               
+                
+            </div>
+           
+            <div >
+            
+                <img src="{{ user.compagnie.logoPath }}" class="img-circle elevation-2" style="width: 70px; height: 70px;">
+               <br>
+                <p style="text-align: center;"><h2> {{ user.compagnie.compagnie }} </h2></p>
+                <p style="text-align: center;"> {{ user.compagnie.adresse }} </p>
+                <p style="text-align: center;"> {{ user.compagnie.phone }} / {{ user.compagnie.phone2 }} </p>
+              </div>
+              <hr>
+            <div class="receipt-bar">
+                <table>
+                    <tr>
+                        <td style="text-align: left;" >Receipt #0001</td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                        <td style="text-align: right;"><span id="date" style="text-align: right;"></span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="receipt-items">
+                <table id="recu">
+                    <thead>
+                        <tr>
+                            <th>Libelle</th>
+                            <th>Qte</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="panier-recu">
+                               
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <hr>
+            <div class="receipt-total">
+                <table id="recu">
+                    <tr>
+                        <th style="text-align: left; ">Sub Total:</th>
+                        <th style="text-align: left; "><span id="totalr">0.00</span></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; ">Discount:</th>
+                        <th style="text-align: left; "><span id="discountr">0.00</span></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; ">TCA:</th>
+                        <th style="text-align: left; "><span id="taxr">0.00</span></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; ">Service Charges:</th>
+                        <th style="text-align: left; "><span id="service_charger" >0.00</span></th>
+                    </tr>
+
+                    <tr>
+                        <th style="text-align: left; ">Total TTC:</th>
+                        <th style="text-align: left; "><span id="montant_ttcr">0.00</span></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; ">Versement:</th>
+                        <th style="text-align: left; "><span id="versement" >0.00</span></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; ">Monnaie:</th>
+                        <th style="text-align: left;"><span id="monnaie">0.00</span></th>
+                    </tr>
+
+                </table>
+               
+            </div>
+            <hr>
+            <div class="receipt-delivered-to">
+                <p>Delivered to: Jacques Pierre</p>
+            </div>
+            <div class="receipt-footer">
+                <p>Thank you for your purchase!</p>
+            </div>
+        </div>
+    </div>
+</div>
+  <!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    let panier = [];
+                        
+                        function ajouterAuPanier(article_id, article__description, prix, cout_unit) {
+                          let itemExist = false;
+                          panier.forEach(function(item) {
+                            if (item.article_id === article_id) {
+                              item.quantite++;
+                              itemExist = true;
+                            }
+                          });
+                          if (!itemExist) {
+                            panier.push({
+                                article_id: article_id,
+                                article__description: article__description,
+                              quantite: 1,
+                              prix: prix,
+                              cout_unit: cout_unit
+                            });
+                          }
+                          afficherPanier();
+                          calculerMontantTotal();
+                          afficherrecu();
+                         
+                        }
+
+                        function ajouterAuPanierapresHold(article_id, article__description, quantite,  prix, cout_unit) {
+                          let itemExist = false;
+                         
+                          if (!itemExist) {
+                            panier.push({
+                              article_id: article_id,
+                              article__description: article__description,
+                              quantite: quantite,
+                              prix: prix,
+                              cout_unit: cout_unit
+                            });
+                          }
+                          afficherPanier();
+                          calculerMontantTotal();
+                          
+                         
+                        }
+
+                       
+                        function afficherrecu() {
+                          const panierRecu = document.getElementById('panier-recu');
+                          panierRecu.innerHTML = '';
+                          panier.forEach(function(item) {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                            
+                              <td>${item.article__description}</td>
+                              <td>${item.quantite}</td>
+                              <td>${item.prix} </td>
+                              <td>${(item.quantite * item.prix).toFixed(2)}</td> 
+                            `;
+                            panierRecu.appendChild(tr);
+                            
+                          });
+                        }
+
+                        function afficherPanier() {
+                          const panierBody = document.getElementById('panier-body');
+                          panierBody.innerHTML = '';
+                          panier.forEach(function(item) {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                              <td>${item.article_id}</td>
+                              <td>${item.article__description}</td>
+                              <td>${item.quantite}</td>
+                              <td>${item.prix} </td>
+                             
+                              <td>${(item.quantite * item.prix).toFixed(2)}</td>
+
+                              <td>
+                                   
+                                    <button onclick="supprimerArticle('${item.article_id}')" class="btn btn-danger">Supprimer</button>
+                                    <button onclick="modifierQuantite('${item.article_id}')" class="btn btn-success">Quantite</button>
+                                    <button onclick="appliquerReduction('${item.article_id}', '${item.prix}')" class="btn btn-warning">Linde Discount</button>
+                              </td>
+                              
+                            `;
+                            panierBody.appendChild(tr);
+                            
+                          });
+                        }
+
+                        function afficherholdPanier() {
+                          const panierBody = document.getElementById('panier-body');
+                          panierBody.innerHTML = '';
+                          panier.forEach(function(item) {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                              <td>${item.article_id}</td>
+                              <td>${item.article__description}</td>
+                              <td>${item.quantite}</td>
+                              <td>${item.prix} </td>
+                             
+                              <td>${(item.quantite * item.prix).toFixed(2)}</td>
+
+                              <td>
+                                   
+                                    <button onclick="supprimerArticle('${item.article_id}')" class="btn btn-danger">Supprimer</button>
+                                    <button onclick="modifierQuantite('${item.article_id}')" class="btn btn-success">Quantite</button>
+                                    <button onclick="appliquerReduction('${item.article_id}', '${item.prix}')" class="btn btn-warning">Linde Discount</button>
+                              </td>
+                              
+                            `;
+                            panierBody.appendChild(tr);
+                            
+                          });
+                        }
+                        
+
+                        function calculerMontantTotal() {
+                            let total = 0;
+                            let cout_total = 0
+                            let total_ttc = 0;
+                            let taxRate = parseFloat(document.getElementById('taxrecuperation').value); // Taux de taxe de 10%
+                            let serviceCharge = parseFloat(document.getElementById('service_charge').textContent); // Récupérer la valeur de la charge de service
+                            let discount = parseFloat(document.getElementById('discount').textContent); // Récupérer la valeur du rabais
+                            let quantite_total = 0;
+                            let deposit = parseFloat(document.getElementById('deposit').textContent);
+
+                            // Calculer le total des articles dans le panier
+                            panier.forEach(function(item) {
+                                console.log("item.cout_unit:", item.cout_unit);
+                                total += item.quantite * item.prix;
+                                if (!isNaN(item.cout_unit)) { // Vérifier si item.cout_unit est un nombre valide
+                                    cout_total += item.quantite * item.cout_unit;
+                                }
+                                quantite_total += item.quantite;
+                            });
+
+                            // Calculer le montant de la taxe
+                            let tax = (total * taxRate)/100;
+                            
+
+                            // Ajouter la charge de service au total et au montant TTC
+                            total += serviceCharge;
+                            total_ttc += serviceCharge;
+
+                            // Soustraire le rabais du total et du montant TTC
+                            total -= discount;
+                            total_ttc -= discount;
+
+                            // Calculer le montant total TTC en ajoutant la taxe
+                            
+                            total_ttc = total + tax;
+
+                            balance = total_ttc - deposit
+                            // Mettre à jour les éléments HTML avec les montants calculés
+                            document.getElementById('total').textContent = total.toFixed(2);
+                            document.getElementById('totalr').textContent = total.toFixed(2);
+                            document.getElementById('montant_ttc').textContent = total_ttc.toFixed(2);
+                            document.getElementById('montant_ttcr').textContent = total_ttc.toFixed(2);
+                            document.getElementById('tax').textContent = tax.toFixed(2);
+                            document.getElementById('taxr').textContent = tax.toFixed(2);
+                            document.getElementById('deposit').textContent = deposit.toFixed(2);
+                            document.getElementById('balance').textContent = balance.toFixed(2);
+                            
+                            document.getElementById('discountr').textContent = discount.toFixed(2);
+                            document.getElementById('service_charger').textContent = serviceCharge.toFixed(2);
+                            
+                            document.getElementById('taxInput').value = tax.toFixed(2);
+                            document.getElementById('serviceChargeInput').value = serviceCharge.toFixed(2);
+                            document.getElementById('discountInput').value = discount.toFixed(2);
+                            document.getElementById('montantTTCInput').value = total_ttc.toFixed(2);
+                            document.getElementById('quantitetot').value = quantite_total.toFixed(2);
+                            document.getElementById('cout_total').value = cout_total.toFixed(2);
+                            document.getElementById('balanceinput').value = balance.toFixed(2);
+                            document.getElementById('depositinput').value = deposit.toFixed(2);
+                            
+
+                            document.getElementById('taxInputclose').value = tax.toFixed(2);
+                            document.getElementById('serviceChargeInputclose').value = serviceCharge.toFixed(2);
+                            document.getElementById('discountInputclose').value = discount.toFixed(2);
+                            document.getElementById('montantTTCInputclose').value = total_ttc.toFixed(2);
+                            document.getElementById('quantitetotclose').value = quantite_total.toFixed(2);
+                            document.getElementById('cout_totalclose').value = cout_total.toFixed(2);
+                            document.getElementById('depositclose').value = deposit.toFixed(2);
+                            document.getElementById('balanceclose').value = balance.toFixed(2);
+                        }
+
+                        
+                        function soumettrePanier(formId) {
+                        // Récupérer les données du panier
+                        afficherPopupMontant()
+                        const panierData = JSON.stringify(panier);
+
+                        // Ajouter les données du panier à un champ caché dans le formulaire correspondant
+                        document.getElementById('panierDataInputPayment').value = panierData;
+
+                        // Soumettre le formulaire correspondant
+                        document.getElementById(formId).submit();
+                    }
+
+                    function soumettrePanierHRF(formId) {
+                        // Récupérer les données du panier
+                        const panierData = JSON.stringify(panier);
+
+                        // Ajouter les données du panier à un champ caché dans le formulaire correspondant
+                        document.getElementById('panierDataInputHoldReceipt').value = panierData;
+
+                        // Soumettre le formulaire correspondant
+                        document.getElementById(formId).submit();
+                    }
+
+                       
+
+                    const payerButton = document.querySelector('#payerButton');
+                    const holdReceiptButton = document.querySelector('#holdReceiptButton');
+
+                    // Ajoutez un écouteur d'événements sur le clic du bouton "Payer"
+                    payerButton.addEventListener('click', function(event) {
+                        // Empêchez le comportement par défaut du bouton (soumission du formulaire)
+                        event.preventDefault();
+                        // Soumettez le formulaire avec l'ID "paymentForm"
+                        document.getElementById('paymentForm').submit();
+                    });
+
+                    // Ajoutez un écouteur d'événements sur le clic du bouton "Hold Receipt"
+                    holdReceiptButton.addEventListener('click', function(event) {
+                        // Empêchez le comportement par défaut du bouton (soumission du formulaire)
+                        event.preventDefault();
+                        // Soumettez le formulaire avec l'ID "holdReceiptForm"
+                        document.getElementById('holdReceiptForm').submit();
+                    });
+</script>
+
+<script>
+    var currentDate = new Date();
+
+    // Formater la date en utilisant les méthodes disponibles dans l'objet Date
+    var year = currentDate.getFullYear();
+    var month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
+    var day = currentDate.getDate().toString().padStart(2, '0');
+    var hours = currentDate.getHours().toString().padStart(2, '0');
+    var minutes = currentDate.getMinutes().toString().padStart(2, '0');
+    var seconds = currentDate.getSeconds().toString().padStart(2, '0');
+    var milliseconds = currentDate.getMilliseconds().toString().padStart(3, '0');
+
+    // Construire la chaîne de date au format spécifié
+    var formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+
+    // Définissez la valeur du champ de date
+    document.getElementById('date_paie').value = formattedDate;
+    document.getElementById('date_paie_hold').value = formattedDate;
+
+
+    // Récupérez l'élément de saisie de recherche
+    const searchInput = document.getElementById('searchInput');
+
+    // Récupérez tous les boutons d'article
+    const articleButtons = document.querySelectorAll('#articleButtonsContainer .btn-success');
+
+    // Créez une fonction pour filtrer les boutons d'article en fonction du texte de recherche
+    function filterButtons(searchText) {
+        // Parcourez tous les boutons d'article
+        articleButtons.forEach(function(button) {
+            const nom = button.textContent.toLowerCase(); // Récupérez le texte du bouton en minuscules pour une recherche insensible à la casse
+
+            // Vérifiez si le texte du bouton contient le texte de recherche
+            if (nom.includes(searchText)) {
+                button.style.display = 'inline-block'; // Afficher le bouton s'il correspond à la recherche
+            } else {
+                button.style.display = 'none'; // Masquer le bouton s'il ne correspond pas à la recherche
+            }
+        });
+    }
+
+    // Ajoutez un écouteur d'événements pour surveiller les changements dans le champ de recherche
+    searchInput.addEventListener('input', function() {
+        const searchText = searchInput.value.toLowerCase(); // Convertir le texte en minuscules pour une recherche insensible à la casse
+        filterButtons(searchText); // Appliquer le filtre aux boutons d'article
+    });
+
+    // Appelez la fonction de filtrage une fois au chargement de la page pour afficher tous les boutons d'article
+    filterButtons('');
+</script>
+
+<script>
+        // Fonction pour supprimer un article du panier
+        function supprimerArticle(article_id) {
+        // Trouver l'index de l'article à supprimer dans le panier
+        const index = panier.findIndex(item => item.article_id === article_id);
+        if (index !== -1) {
+            // Supprimer l'article du panier
+            panier.splice(index, 1);
+            // Mettre à jour l'affichage du panier
+            afficherPanier();
+            // Recalculer le montant total
+            //showInPanier()
+            calculerMontantTotal();
+        }
+    }
+
+    // Fonction pour appliquer une réduction de prix à un article dans le panier
+            function appliquerReduction(article_id, prixInitial) {
+            // Demander à l'utilisateur la nouvelle valeur du prix
+            const nouveauPrix = parseFloat(prompt("Entrez le nouveau prix :"));
+            if (!isNaN(nouveauPrix)) {
+                // Trouver l'index de l'article dans le panier
+                const index = panier.findIndex(item => item.article_id === article_id);
+                if (index !== -1) {
+                    // Mettre à jour le prix de l'article dans le panier
+                    panier[index].prix = nouveauPrix;
+                    // Mettre à jour l'affichage du panier
+                    afficherPanier();
+                    // Recalculer le montant total
+                    calculerMontantTotal();
+                }
+            }
+        }
+
+        function modifierQuantite(article_id) {
+            // Trouver l'index de l'article dans le panier
+            const index = panier.findIndex(item => item.article_id === article_id);
+            if (index !== -1) {
+                // Demander à l'utilisateur la nouvelle quantité
+                const nouvelleQuantite = parseInt(prompt("Entrez la nouvelle quantité :"));
+                if (!isNaN(nouvelleQuantite) && nouvelleQuantite > 0) {
+                    // Mettre à jour la quantité de l'article dans le panier
+                    panier[index].quantite = nouvelleQuantite;
+                    // Mettre à jour l'affichage du panier
+                    afficherPanier();
+                    // Recalculer le montant total
+                    calculerMontantTotal();
+                } else {
+                    alert("Veuillez entrer une quantité valide.");
+                }
+            }
+        }
+</script>
+
+<script>
+
+// Fonction pour ajouter un rabais au montant total
+function ajouterRabais() {
+    // Demander à l'utilisateur d'entrer la nouvelle valeur du rabais
+    const nouveauRabais = parseFloat(prompt("Entrez le montant du rabais :"));
+    
+    // Mettre à jour l'affichage du rabais dans l'interface utilisateur
+    document.getElementById('discount').textContent = nouveauRabais.toFixed(2);
+    
+    // Recalculer le montant total
+    calculerMontantTotal();
+}
+
+function ajouterCharges() {
+    // Demander à l'utilisateur d'entrer la nouvelle valeur du rabais
+    const nouveauCharge = parseFloat(prompt("Entrez le montant du Service Charge :"));
+    
+    // Mettre à jour l'affichage du rabais dans l'interface utilisateur
+    document.getElementById('service_charge').textContent = nouveauCharge.toFixed(2);
+    
+    // Recalculer le montant total
+    calculerMontantTotal();
+}
+function faireUnDepot() {
+    // Demander à l'utilisateur d'entrer la nouvelle valeur du dépôt
+    const nouveauDepot = parseFloat(prompt("Entrez le montant du dépôt :"));
+    
+    // Récupérer le contenu actuel du dépôt et le convertir en nombre
+    let deposit = parseFloat(document.getElementById('deposit').textContent);
+   
+    // Ajouter la nouvelle valeur au contenu actuel et mettre à jour l'affichage
+    document.getElementById('deposit').textContent = (deposit + nouveauDepot).toFixed(2);
+    
+    // Recalculer le montant total
+    calculerMontantTotal();
+}
+</script>
+
+<script>
+        // Sélectionnez le bouton et la div à afficher
+        const openTabButton = document.getElementById('open-tab');
+        const openTabDiv = document.querySelector('.button-container-openTab');
+
+        // Ajoutez un écouteur d'événements pour le clic sur le bouton
+        openTabButton.addEventListener('click', function() {
+            // Vérifiez si la div est actuellement cachée
+            if (openTabDiv.style.display === 'none') {
+                // Si c'est le cas, affichez-la
+                openTabDiv.style.display = 'block';
+            } else {
+                // Sinon, cachez-la
+                openTabDiv.style.display = 'none';
+            }
+        });
+
+                            //hold receipt
+                            function showInPanier(receipt_id) {
+                            // Effectuer une requête AJAX pour récupérer les articles associés à receipt_id
+                            fetch(`/get_articles/?receipt_id=${receipt_id}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Mettre à jour le panier avec les articles récupérés
+                                panier = data;
+                                afficherholdPanier();
+                                calculerMontantTotalH();
+
+                                // Mettre à jour la valeur de l'input hidden avec receipt_id
+                                document.getElementById('hidden_receipt_id').value = receipt_id;
+                                document.getElementById('hiddentab_receipt_id').value = receipt_id;
+                            })
+                            .catch(error => console.error('Erreur lors de la récupération des articles:', error));
+                            }
+
+                        function calculerMontantTotalH() {
+                            let total = 0;
+                            let cout_total = 0
+                            let total_ttc = 0;
+                            let taxRate = 0.1; // Taux de taxe de 10%
+                            let serviceCharge = parseFloat(document.getElementById('service_charge').textContent); // Récupérer la valeur de la charge de service
+                            let discount = parseFloat(document.getElementById('discount').textContent); // Récupérer la valeur du rabais
+                            let quantite_total = 0;
+                            let deposit = parseFloat(document.getElementById('deposit').textContent);
+
+                            // Calculer le total des articles dans le panier
+                            panier.forEach(function(item) {
+                                console.log("item.cout:", item.cout);
+                                total += item.quantite * item.prix;
+                                if (!isNaN(item.cout)) { // Vérifier si item.cout_unit est un nombre valide
+                                    cout_total += item.quantite * item.cout;
+                                }
+                                quantite_total += item.quantite;
+                            });
+
+                            // Calculer le montant de la taxe
+                            let tax = total * taxRate;
+                            
+
+                            // Ajouter la charge de service au total et au montant TTC
+                            total += serviceCharge;
+                            total_ttc += serviceCharge;
+
+                            // Soustraire le rabais du total et du montant TTC
+                            total -= discount;
+                            total_ttc -= discount;
+
+                            // Calculer le montant total TTC en ajoutant la taxe
+                            
+                            total_ttc = total + tax;
+
+                            balance = total_ttc - deposit
+                            // Mettre à jour les éléments HTML avec les montants calculés
+                            document.getElementById('total').textContent = total.toFixed(2);
+                            document.getElementById('montant_ttc').textContent = total_ttc.toFixed(2);
+                            document.getElementById('tax').textContent = tax.toFixed(2);
+                            document.getElementById('deposit').textContent = deposit.toFixed(2);
+                            document.getElementById('balance').textContent = balance.toFixed(2);
+                            
+                            
+                            document.getElementById('taxInput').value = tax.toFixed(2);
+                            document.getElementById('serviceChargeInput').value = serviceCharge.toFixed(2);
+                            document.getElementById('discountInput').value = discount.toFixed(2);
+                            document.getElementById('montantTTCInput').value = total_ttc.toFixed(2);
+                            document.getElementById('quantitetot').value = quantite_total.toFixed(2);
+                            document.getElementById('cout_total').value = cout_total.toFixed(2);
+                            document.getElementById('balanceinput').value = balance.toFixed(2);
+                            document.getElementById('depositinput').value = deposit.toFixed(2);
+                            
+
+                            document.getElementById('taxInputclose').value = tax.toFixed(2);
+                            document.getElementById('serviceChargeInputclose').value = serviceCharge.toFixed(2);
+                            document.getElementById('discountInputclose').value = discount.toFixed(2);
+                            document.getElementById('montantTTCInputclose').value = total_ttc.toFixed(2);
+                            document.getElementById('quantitetotclose').value = quantite_total.toFixed(2);
+                            document.getElementById('cout_totalclose').value = cout_total.toFixed(2);
+                            document.getElementById('depositclose').value = deposit.toFixed(2);
+                            document.getElementById('balanceclose').value = balance.toFixed(2);
+                        }
+
+                        document.addEventListener("DOMContentLoaded", function() {
+                            // Sélection de l'élément bouton
+                            var openTabButton = document.getElementById("open-tab");
+
+                            // Ajout d'un écouteur d'événements pour le clic sur le bouton
+                            openTabButton.addEventListener("click", function() {
+                                // Sélection de l'élément input hidden
+                                var hiddenInput = document.getElementById("hidden-input");
+                                var hiddenInputtab = document.getElementById("hiddentab-input");
+                                
+                                // Définition de la valeur de l'input hidden
+                                hiddenInput.value =""
+                                hiddenInput.value = "open"; // Vous pouvez remplacer "open" par la valeur souhaitée
+
+                                hiddenInputtab.value =""
+                                hiddenInputtab.value = "open"; // Vous pouvez remplacer "open" par la valeur souhaitée
+
+                                // Soumission du formulaire si nécessaire
+                                // document.getElementById("form-id").submit();
+                            });
+                        });
+
+                        function selectionnerTypePaiement() {
+        // Récupérer la valeur sélectionnée dans le menu déroulant
+        const typePaiementSelect = document.getElementById('typePaiementSelect');
+        const typePaiementInput = document.getElementById('typePaiementInput');
+        
+        // Mettre à jour la valeur du champ input avec la valeur sélectionnée dans le menu déroulant
+        typePaiementInput.value = typePaiementSelect.value;
+    }
+
+    function afficherPopupMontant() {
+        // Demander à l'utilisateur d'entrer le montant donné par le client
+        const montantDonne = parseFloat(prompt("Entrez le montant donné par le client :"));
+
+        // Vérifier si l'utilisateur a entré un montant valide
+        if (!isNaN(montantDonne)) {
+                // Mettre à jour les champs cachés avec les valeurs saisies
+                document.getElementById('montantDonneInput').value = montantDonne;
+                let montant_ttc = parseFloat(document.getElementById('montant_ttc').textContent)
+                let reste = 0
+                reste = montantDonne - montant_ttc
+                document.getElementById('montantMonnaieInput').value = reste;
+
+                document.getElementById('versement').textContent = montantDonne.toFixed(2);
+                document.getElementById('monnaie').textContent = reste.toFixed(2);
+                //imprimerRecu();
+                //\afficherRecu();
+                // Soumettre le formulaire
+                //document.getElementById('paymentForm').submit();
+            } 
+         else {
+            alert("Montant donné invalide.");
+        }
+    }
+ // chercher a imprimer le recu
+    function imprimerRecuhh() {
+    // Masquer les éléments indésirables avant l'impression (par exemple, les boutons)
+    document.getElementById('payerButton').style.display = 'none';
+    var fiche = document.getElementById('section').style.display = 'none';
+    // Déclencher l'impression de la page actuelle
+    window.print();
+    // Afficher à nouveau les éléments masqués après l'impression
+    document.getElementById('myModal').style.display = 'block';
+    
+    //document.getElementById('payerButton').style.display = 'block';
+}
+
+// Sélectionnez le bouton "Payer"
+const boutonPayer = document.getElementById('payerButton');
+
+// Ajoutez un écouteur d'événements pour le clic sur le bouton "Payer"
+boutonPayer.addEventListener('click', function(event) {
+    // Empêchez le comportement par défaut du bouton (soumission du formulaire)
+    event.preventDefault();
+    // Appelez la fonction pour imprimer le reçu
+    imprimerRecu();
+});
+
+// Fonction pour imprimer le contenu du div modal
+function imprimerRecu() {
+    afficherRecu()
+    // Sélectionnez le contenu du div modal
+    var contenuRecu = document.getElementById('myModal').innerHTML;
+
+    // Ouvrez une nouvelle fenêtre d'impression
+    var fenetreImpression = window.open('', '', 'height=500,width=200');
+
+    // Insérez le contenu du div modal dans la fenêtre d'impression
+    fenetreImpression.document.write('<html><head><title>Receipt</title></head><body>');
+    fenetreImpression.document.write(contenuRecu);
+    fenetreImpression.document.write('</body></html>');
+
+    // Appelez la méthode window.print() pour imprimer le contenu
+    fenetreImpression.document.close(); // Fermez le document après l'écriture
+    fenetreImpression.print(); // Imprimez le contenu
+}
+</script>
+
+<script>
+    // Fonction pour afficher la fenêtre modale du reçu
+    function afficherRecu() {
+        var modal = document.getElementById('myModal');
+        var fiche = document.getElementById('section');
+        fiche.style.display = 'none';
+        modal.style.display = 'block';
+        
+    }
+
+    // Fonction pour fermer la fenêtre modale du reçu
+    function fermerRecu() {
+        var modal = document.getElementById('myModal');
+        modal.style.display = 'none';
+    }
+
+    // Fonction pour mettre à jour le contenu du reçu en temps réel
+    function mettreAJourRecu() {
+        // Mettez ici le code pour mettre à jour le contenu du reçu en fonction des articles dans le panier
+    }
+
+    // Écouteur d'événement pour le bouton "OK" après avoir saisi le montant donné par le client
+    document.getElementById('bouton-ok').addEventListener('click', function() {
+        // Mettez ici le code pour mettre à jour le montant donné par le client dans le reçu
+        afficherRecu(); // Affichez la fenêtre modale du reçu
+    });
+
+    // Écouteur d'événement pour le bouton de fermeture de la fenêtre modale
+    document.getElementsByClassName('close')[0].addEventListener('click', function() {
+        fermerRecu(); // Fermez la fenêtre modale du reçu
+    });
+
+    window.onload = function() {
+            var dateSpan = document.getElementById('date');
+            var currentDate = new Date();
+            dateSpan.textContent = currentDate.toLocaleDateString(); // Format de date selon la localisation
+        };
+</script>
+
+<script>
+    // Fonction pour imprimer le contenu du div modal
+    function imprimerRecuok() {
+        // Sélectionnez le contenu du div modal
+        var contenuRecu = document.getElementById('myModal').innerHTML;
+
+        // Ouvrez une nouvelle fenêtre d'impression
+        var fenetreImpression = window.open('', '', 'height=500,width=500');
+
+        // Insérez le contenu du div modal dans la fenêtre d'impression
+        fenetreImpression.document.write('<html><head><title>Receipt</title></head><body>');
+        fenetreImpression.document.write(contenuRecu);
+        fenetreImpression.document.write('</body></html>');
+
+        // Appelez la méthode window.print() pour imprimer le contenu
+        fenetreImpression.document.close(); // Fermez le document après l'écriture
+        fenetreImpression.print(); // Imprimez le contenu
+    }
+</script>
+{% endblock custom_js %}

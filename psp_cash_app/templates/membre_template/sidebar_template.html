@@ -1,0 +1,127 @@
+{% load static %}
+<style>
+  .color_bar {
+      background-color: {{ user.muso.couleur_preferee }};
+      /* Autres propriétés CSS */
+  .color_text {
+      color: {{ user.muso.couleur_text_menu }};
+      /* Autres propriétés CSS */
+  }
+
+  .custom-hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(to right, #ff0000, #00ff00);
+    margin: 20px 0;
+  }
+
+  .image {
+    height: 50px; /* Augmentez la hauteur selon vos besoins */
+    overflow: visible;
+  }
+
+  .image img {
+    margin-top: 10px; /* Ajustez la valeur selon vos besoins */
+  }
+</style>
+<aside class="main-sidebar color_bar elevation-4">
+    <!-- Brand Logo -->
+</br>
+    <a href="" class="brand-link">
+      <img src="{{ user.compagnie.logoPath }}" alt="Mutuel Solidarite" class="brand-image img-circle elevation-3" style="opacity: .8; transform: scale(2.5); margin-right: 40px; margin-left: 20px; "> <h2>{{ user.muso.sigle }}</h2>
+    </a>
+    <hr class="custom-hr">
+ 
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{{ membre_obj.profile_pic }}" class="img-circle elevation-2" alt="User Image" style="opacity: .8; transform: scale(1.5); margin-right: 10px; margin-left: 5px;"> 
+       
+        </div>
+        <p>
+        <div class="info">
+          <a href="{% url 'membre_profile' %}" class="d-block">{{ user.username }}</a>
+        </div>
+      </p>
+      </div>
+      
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+             
+          <li class="nav-item">
+            {% url 'membre_home' as membre_home %}
+            <a href="{{ membre_home }}" class="nav-link {% if request.path == membre_home %} active {% endif %}">
+              <i class="nav-icon fas fa-th" color_text></i>
+              <p class="color_text">
+               Home
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            {% url 'add_receiptemp' as add_receiptemp %}
+            <a href="{{ add_receiptemp }}" class="nav-link {% if request.path == add_receiptemp %} active {% endif %}{% if request.path == add_receiptemp %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Passer un Commande               
+              </p>
+            </a>
+          </li>
+         
+
+          <li class="nav-item">
+            {% url 'manage_receiptm' as manage_receiptm %}
+            <a href="{{ manage_receiptm }}" class="nav-link {% if request.path == manage_receiptm %} active {% endif %}{% if request.path == manage_receiptm %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Liste des Fiches               
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            {% url 'tab_openemp' as tab_openemp %}
+            <a href="{{ tab_openemp }}" class="nav-link {% if request.path == tab_openemp %} active {% endif %}{% if request.path == tab_openemp %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Liste des Fiches Ouvertes              
+              </p>
+            </a>
+          </li>
+
+      
+          <li class="nav-item">
+            {% url 'profile_mview' as profile_mview %}
+            <a href="{% url 'profile_mview' %}" class="nav-link {% if request.path == profile_mview %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Message Pour Tous!
+              </p>
+            </a>
+          </li>
+          
+          {% if has_permission %}
+          <li class="nav-item">
+            {% url 'add_depense' as add_depense %}
+            <a href="{% url 'add_depense' %}" class="nav-link {% if request.path == add_depense %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Add Cotisation
+              </p>
+            </a>
+          </li>
+          {% endif %}
+       
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

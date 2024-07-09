@@ -1,0 +1,128 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+Ajouter Depense
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Depense Details</h3>
+                      </div>
+                      <form role="form" action="/add_depense_save" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="card-body">
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th> <label>Payout </label>
+                                    <input type="number" class="form-control" name="payout" placeholder="Entrer le montant payout "></th>
+                                  </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                        <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th> <label>Date </label>
+                                    <input type="datetime-local" class="form-control" name="date_payout" placeholder="Entrer la date "></th>
+                                  </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th> <label>Description </label>
+                                    <input type="text" class="form-control" name="description" placeholder="Entrer le description de la depense"></th>
+                                  </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                        
+
+                          <div class="form-group">
+                            {% if messages %}
+                            <div class="col-12">
+                              {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                              <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% if message.tags == 'success' %}
+                              <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+                        </div>
+                      </form>
+                      <div class="card-header"> 
+                      Liste des Depenses
+                     </div>
+
+                     <div class="card-body table-responsive p-0">
+                      <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            
+                            <th>Code Depense</th>
+                            <th>Description</th>
+                            <th>Montant</th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for depense in depense_info %}
+                          <tr>
+                            <td>{{ depense.code_payout }}</td>
+                            <td>{{ depense.payout_comment }}</td>
+                            <td>{{ depense.payout }}</td>
+                            <td>{{ depense.date_payout }}</td>
+                            <td>{{ depense.userAdded }}</td>
+                            <td><a href="{% url 'supprimer_depense' depense.code_payout %}" class="btn btn-danger">Supprimer</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      {% endblock main_content %}
+      {% block custom_js %}
+<script>
+$(document).ready(function() {
+  $(".btn-danger").on("click", function(event) {
+    event.preventDefault(); // Empêche le lien de fonctionner immédiatement
+
+    // Afficher une boîte de dialogue de confirmation
+    var result = confirm("Voulez-vous vraiment supprimer cette depense ?");
+
+    // Si l'utilisateur clique sur "OK" dans la boîte de dialogue, rediriger vers la vue de suppression
+    if (result) {
+      window.location.href = $(this).attr("href");
+    }
+  });
+});
+</script>
+{% endblock custom_js %}

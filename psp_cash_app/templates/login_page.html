@@ -1,0 +1,594 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>MUSO</title>
+<style>
+              *{
+          margin:0;
+          padding:0;
+
+      }
+      .main{
+          width:100%;
+          background:linear-gradient(to top, rgba(0,0,0,0.5)50%,rgba(0,0,0,0.5)50%), url('{% static "img/1.jpeg" %}');;
+          background-position: center;
+          background-size: cover;
+          height:109vh;
+      }
+
+      .navbar{
+          width: 1200px;
+          height: 75px;
+          margin: auto;
+      }
+
+      .icon{
+          width: 200px;
+          float: left;
+          height:70px;
+      }
+
+      .logo{
+          color: #ff7200;
+          font-size: 35px;
+          font-family: Arial;
+          padding-left: 20px;
+          float:left;
+          padding-top: 10px;
+      }
+
+      .menu{
+          width: 400px;
+          float: left;
+          height:70px;
+      }
+
+      ul{
+          float:left;
+          display:flex;
+          justify-content: center;
+          align-items: center;
+      }
+
+      ul li{
+          list-style: none;
+          margin-left: 62px;
+          margin-top: 27px;
+          font-size: 14px;
+      }
+
+      ul li a{
+          text-decoration: none;
+          color: #fff;
+          font-family: Arial;
+          font-weight: bold;
+          transition: 0.4s ease-in-out;
+      }
+
+      ul li a:hover{
+          color: #ff7200;
+      }
+
+      .search{
+          width:330px;
+          float:left;
+          margin-left:270px;
+      }
+
+      .srch{
+          font-family: "Times New Roman";
+          width:200px;
+          height: 40px;
+          background: transparent;
+          border:1px solid #ff7200;
+          margin-top: 13px;
+          color: #fff;
+          border-right: none;
+          font-size: 16px;
+          float: left;
+          padding: 10px;
+          border-bottom-left-radius: 5px;
+          border-top-left-radius: 5px;
+      }
+
+      .btn{
+          width: 100px;
+          height: 40px;
+          background: #ff7200;
+          border: 2px solid #ff7200;
+          margin-top: 13px;
+          color: #fff;
+          font-size: 15px;
+          border-bottom-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+
+      }
+
+      .btn:focus{
+          outline:none;
+      }
+
+      .srch:focus{
+          outline: none;
+      }
+
+      .content{
+          width: 1200px;
+          height:autoauto;
+          margin: auto;
+          color: #fff;
+          position: relative;
+      }
+
+      .content .par{
+          padding-left: 20px;
+          padding-bottom: 25px;
+          font-family: Arial;
+          letter-spacing: 1.2px;
+          line-height: 30px;
+
+      }
+
+      .content h1{
+          font-family: "Times new Roman";
+          font-size: 50px;
+          padding-left: 20px;
+          margin-top:9%;
+          letter-spacing:2px;
+      }
+
+      .content .cn{
+          width: 160px;
+          height: 40px;
+          background: #ff7200;
+          border:none;
+          margin-bottom: 10px;
+          margin-left:20px;
+          font-size:18px;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: .4s ease;
+      }
+
+      .content .cn a{
+          text-decoration: none;
+          color: #000;
+          transition: .3s ease;
+      }
+
+      .cn:hover{
+          background-color: #fff;
+      }
+
+      .content span{
+          color: #ff7200;
+          font-size: 60px;
+      }
+
+
+      .form{
+          width: 250px;
+          height: 400px;
+          background:linear-gradient(to top, rgba(0,0,0,0.8)50%,rgba(0,0,0,0.8)50%);
+          position: absolute;
+          top: -20px;
+          left: 870px;
+          border-radius: 10px;
+          padding: 25px;
+      }
+
+      .form h2{
+          width: 220px;
+          font-family: sans-serif;
+          text-align: center;
+          color: #ff7200;
+          font-size: 22px;
+          background-color: #fff;
+          border-radius: 10px;
+          margin: 2px;
+          padding: 8px;
+      }
+
+      .form input{
+          width: 240px;
+          height: 35px;
+          background: transparent;
+          border-bottom: 1px solid #ff7200;
+          border-top: none;
+          border-right: none;
+          border-left: none;
+          color: #fff;
+          font-size: 15px;
+          letter-spacing: 1px;
+          margin-top: 30px;
+          font-family: sans-serif;
+      }
+
+      .form input:focus{
+          outline: none;
+      }
+
+      ::placeholder{
+          color: #fff;
+          font-family: Arial;
+      }
+
+      .btne{
+          width: 240px;
+          height: 40px;
+          background-color: #ff7200;
+          border: none;
+          margin-top: 30px;
+          font-size: 18px;
+          border-radius: 10px;
+          cursor: pointer;
+          color: #fff;
+          transition: 0.4s ease;
+
+      }
+
+      .btne:hover{
+          background: #fff;
+          color: #ff7200;
+      }
+
+      .btne a{
+          text-decoration: none;
+          color: #000;
+          font-weight: bold;
+      }
+
+      .form .link{
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 17px;
+          padding-top: 20px;
+          text-align: center;
+      }
+
+      .form .link a{
+          text-decoration: none;
+          color: #ff7200;
+      }
+
+      .liw{
+          padding-top: 15px;
+          padding-bottom: 10px;
+          text-align: center;
+      }
+
+      .icons a{
+          text-decoration: none;
+          color: #fff;
+      }
+
+      .icons ion-icon{
+          color: #fff;
+          font-size: 30px;
+          padding-left: 14px;
+          padding-top: 5px;
+          transition: 0.3s ease;
+      }
+
+      .icons ion-icon:hover{
+          color: #ff7200;
+      }
+
+      /* la responsible */
+
+      @media screen and (max-width: 1200px){
+          /* Normal Screen */
+
+          .navbar{
+              width: 100%;
+              height: 100px;
+          }
+          ul{
+              margin-left: 30px;
+          }
+          ul li{
+              margin-left: 60px;
+          }
+          ul li a{
+              font-size: 1.6vw;
+          }
+
+          .search{
+              margin-top: 3px;
+              margin-left: 290px;
+          }
+
+          .srch{
+              height: 40px;
+              width: 190px;
+              font-size:14px;
+          }
+          .btn{
+              height: 40px;
+              width: 80px;
+          }
+
+          .content{
+              width: 100%;
+
+          }
+          .content h1, .content span{
+              font-size: 4.5vw
+          }
+          .content .par{
+              width: 90%;
+              font-size: 1.5vw;
+          }
+          .content .cn{
+              width: 13%;
+              height: 3.5vw;
+              font-size: 1.8vw;
+          }
+          .content a{
+              font-size: 1.6vw;
+          }
+      }
+
+      @media screen and (max-width:1170px){
+      /* Login-box*/
+          .main{
+              padding-left: 20px;
+              height: 180vh;
+          }
+          .form{
+              margin-left: -30px;
+              width: 250px;
+              height: 380px;
+              background:linear-gradient(to top, rgba(0,0,0,0.8)50%,rgba(0,0,0,0.8)50%);
+              position: absolute;
+              top: 420px;
+              left: 50px;
+              border-radius: 10px;
+              padding: 25px;
+          }
+          .form input{
+              width: 240px;
+              height: 35px;
+              background: transparent;
+              border-bottom: 1px solid #ff7200;
+              border-top: none;
+              border-right: none;
+              border-left: none;
+              color: #fff;
+              font-size: 15px;
+              letter-spacing: 1px;
+              margin-top: 30px;
+              font-family: sans-serif;
+          }
+          .btne a{
+              font-size: 16px;
+          }
+          .form .link a{
+              font-size: 16px;
+          }
+      }
+
+
+      @media screen and (max-width:830px){
+          /*tablette*/
+          .content{
+              margin-top: 120px;
+              width: 80%;
+              margin-left: 40px;
+
+          }
+          .content h1, .content span{
+              font-size: 6vw;
+          }
+          .content .par{
+              width: 90%;
+              font-size: 1.8vw;
+          }
+          .content .cn{
+              width: 15%;
+              height: 4.5vw;
+              font-size: 2vw;
+          }
+          .content a{
+              font-size: 2vw;
+
+          }
+          .logo{
+              margin-left: 240px;
+              width: 100%;
+              margin-top: 15px;
+              font-size: 5vw;
+
+          }
+          .menu{
+              width: 100%;
+          }
+          ul{
+              margin-top: -5px;
+              margin-left: 5px;
+          }
+          ul li{
+              margin-left: 60px;
+          }
+          ul li a{
+              font-size: 2vw;
+          }
+          .search{
+              margin-top: -20px;
+              margin-left: 60px;
+          }
+          .srch{
+              height:30px;
+              width: 160px;
+              font-size: 12px;
+          }
+          .btn{
+              height: 30px;
+              width: 70px;
+          }
+
+          .main{
+              padding-left: 20px;
+              height: 180vh;
+          }
+          .form{
+              margin-left: -30px;
+              width: 250px;
+              height: 380px;
+              background:linear-gradient(to top, rgba(0,0,0,0.8)50%,rgba(0,0,0,0.8)50%);
+              position: absolute;
+              top: 420px;
+              left: 50px;
+              border-radius: 10px;
+              padding: 25px;
+          }
+          .form input{
+              width: 240px;
+              height: 35px;
+              background: transparent;
+              border-bottom: 1px solid #ff7200;
+              border-top: none;
+              border-right: none;
+              border-left: none;
+              color: #fff;
+              font-size: 15px;
+              letter-spacing: 1px;
+              margin-top: 30px;
+              font-family: sans-serif;
+          }
+          .btne a{
+              font-size: 16px;
+          }
+          .form .link a{
+              font-size: 16px;
+          }
+      }
+
+      @media screen and (max-width:660px){
+          /* IPAD old version*/
+
+          .content{
+              margin-top:80px;
+              margin-left: 20px;
+          }
+          .search{
+              margin-top: -40px;
+              margin-left: 42px;
+          }
+          .logo{
+              margin-left: 180px;
+              font-size: 4vw;
+          }
+          ul{
+              margin-top: -25px;
+              margin-left: -5px;
+          }
+          ul li{
+              margin-left: 50px;
+
+          }
+          ul li a{
+              font-size: 2vw;
+          }
+      }
+
+      @media screen and(max-width:450px){
+          /* mobile*/
+          .logo{
+              margin-left: 140px;
+              font-size: 4vw;
+          }
+          ul{
+              margin-top: 25px;
+          }
+          ul li{
+              margin-left: 42px;
+          }
+          ul li a{
+              font-size:2vw
+          }
+
+          .search{
+              margin-top: -40px;
+              margin-left: 38px;
+          }
+      }
+</style>
+
+</head>
+<body>
+    <div class="main">
+
+        <div class="navbar">
+
+            <div class="icon">
+                <h2 class="logo">MUSO</h2>
+            </div>
+
+            <div class="menu">
+                <ul>
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="#">Apropos</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Evénements</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="search">
+                <input class="srch" type="search" name="" placeholder="Type to text">
+                <a href="#"> <button class="btn"> Rechercher </button></a>
+            </div>
+
+        </div>
+
+        <div class="content">
+            <h1>Application Web  <br><span>Pour la Gestion </span> <br>des Mutuelles Solidarité</h1>
+            <p class="par">Une possibbilité qui est donnée à vous qui gère un MUSO, <br>Vous pouvez gérer toutes les données de votre mutuelles à distance, 
+                <br>  il suffit seulement de faire choix de cette application<br> Voici les modules que gère cette application:<br>
+               
+                &#9733;GESTION DES MEMBRES<br> 
+                &#9733;GESTION DES COTISATIONS<br>
+                &#9733;GESTION DES CREDITS<br> 
+                &#9733;GESTION DES REMBOURSEMENTS<br>
+                &#9733;GESTION DES DEPENSES<br>
+                &#9733;GESTION DES RAPPORTS<br></p>
+              
+
+            <button class="cn"><a href="#">Contactez-Nous</a></button>
+        
+            <div class="form">
+              <form action="/doLogin" method="post">
+                {% csrf_token %}
+
+                <h2>Connectez-vous ICI</h2>
+                {% if messages %}
+                <div class="col-12">
+                  {% for message in messages %}
+                  {% if message.tags == 'error' %}
+                  <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                  {% endif %}
+                  {% endfor %}
+                </div>
+                {% endif %}
+                <input type="email" name="email" placeholder="Entrer votre email ici">
+                <input type="password" name="password" placeholder="Entrer votre mot de pass ici">
+                <button type="submit" class="btne">Connecter</button>
+                </form>
+                <p class="link">Vous n'avez pas de Compte<br>
+                <a href="#">Creez-en un</a> ICI</p> 
+                <p class="liw">Connectez-vous Avec.</p>
+
+                <div class="icons">
+                    <a href="#"><ion-icon name="logo-facebook"></ion-icon></a>
+                    <a href="#"><ion-icon name="logo-instagram"></ion-icon></a>
+                    <a href="#"><ion-icon name="logo-twitter"></ion-icon></a>
+                    <a href="#"><ion-icon name="logo-google"></ion-icon></a>
+                    <a href="#"><ion-icon name="logo-skype"></ion-icon></a>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+Ajuster Article | Article CODE : {{ article.code_articl }}
+<!-- | Subject Name : {{ subject.subject_name }} | Subject ID : {{ subject.id }} -->
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Ajuster Article</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <!-- form start -->
+                      <form role="form" action="/ajuster_article_save" method="post">
+                        {% csrf_token %}
+                        <div class="card-body">
+  
+                            <div class="form-group">
+                              <label>Code Article</label>
+                              <input type="text" class="form-control" name="code_article" value="{{ article.id }}">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Nouveau Cout</label>
+                              <input type="text" class="form-control" name="nouveau_cout" placeholder="Entrer le nouveau cout" >
+                              <input type="hidden" class="form-control" name="ancien_cout" placeholder="Entrer le cout" value="{{ article.cout_unit }}">
+                            </div>
+                            <div class="form-group">
+                              <label>Nouvelle Quantite</label>
+                              <input type="text" class="form-control" name="nouvelle_quantite" placeholder="Entrer la nouvelle quantite" >
+                              <input type="hidden" class="form-control" name="ancienne_quantite" placeholder="Entrer la quantite" value="{{ article.quantite }}">
+                            </div>
+                            
+                            <div class="form-group">
+                              <label>Nouveau Prix</label>
+                              <input type="text" class="form-control" name="nouveau_prix" placeholder="Entrer le nouveau prix" >
+                              <input type="hidden" class="form-control" name="ancien_prix" placeholder="Entrer le prix" value="{{ article.prix }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Memo</label>
+                                <textarea class="form-control" rows="5" name="memo"></textarea>
+                              </div>
+
+                          <div class="form-group">
+                            {% if messages %}
+                            <div class="col-12">
+                              {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                              <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% if message.tags == 'success' %}
+                              <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-block">Ajuster Cotisation</button>
+                        </div>
+                      </form>
+                </div>
+                    <!-- /.card -->
+              </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      {% endblock main_content %}

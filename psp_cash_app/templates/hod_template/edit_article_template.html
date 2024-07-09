@@ -1,0 +1,108 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+Edit Article | Article ID : {{ article.id }}
+<!-- | Subject Name : {{ subject.subject_name }} | Subject ID : {{ subject.id }} -->
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Edit Article</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <!-- form start -->
+                      <form role="form" action="/edit_article_save" method="post">
+                        {% csrf_token %}
+                        <div class="card-body">
+  
+                            <div class="form-group">
+                              <label>Code Article</label>
+                              <input type="text" class="form-control" name="code_article" value="{{ article.code_articl }}">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Description</label>
+                              <input type="text" class="form-control" name="description" placeholder="Entrer le nom de l'article " value="{{ article.description }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description 2</label>
+                                <input type="text" class="form-control" name="description2" placeholder="Entrer le nom de l'article " value="{{ article.description2 }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label >Departement</label>
+                                <select class="form-control"  name="departement">
+                                {% for departement in departement_info %}
+                                  <option value="{{ departement.id}}" {% if departement.id == article.departement.id %} selected {% endif %}>{{ departement.departement }}</option>
+                                {% endfor %}
+                                </select>
+                          </div>
+
+                            <div class="form-group">
+                              <label>Cout</label>
+                              <input type="text" class="form-control" name="cout" placeholder="Entrer le cout" value="{{ article.cout_unit }}">
+                            </div>
+                            <div class="form-group">
+                              <label>quantite</label>
+                              <input type="text" class="form-control" name="quantite" placeholder="Entrer la quantite" value="{{ article.quantite }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label >Unite</label>
+                                <select class="form-control"  name="unite_mesure">
+                                {% for unite in unite_mesure %}
+                                  <option value="{{ unite.id}}" {% if unite.id == article.unite_mesure.id %} selected {% endif %}>{{ unite.unite_mesure }}</option>
+                                {% endfor %}
+                                </select>
+                          </div>
+
+                            <div class="form-group">
+                              <label>Prix</label>
+                              <input type="text" class="form-control" name="prix" placeholder="Entrer le prix" value="{{ article.prix }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Date D'expiration</label>
+                                <input type="date" class="form-control" name="date_expiration" placeholder="Entrer la Date d'expiration" value="{{ article.date_expiration | date:'Y-m-d' }}">
+                              </div>
+
+                            <div class="form-group">
+                                <label>reoderpoint</label>
+                                <input type="text" class="form-control" name="reoderpoint" placeholder="Entrer le reoderpoint" value="{{ article.reoderpoint }}">
+                              </div>
+
+                          <div class="form-group">
+                            {% if messages %}
+                            <div class="col-12">
+                              {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                              <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% if message.tags == 'success' %}
+                              <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-block">Edit Cotisation</button>
+                        </div>
+                      </form>
+                </div>
+                    <!-- /.card -->
+              </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      {% endblock main_content %}

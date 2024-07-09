@@ -1,0 +1,575 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %}
+Details sur les rapports de Ventes
+ {% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <form id="dateForm" method="GET" action="{% url 'rapport_vente' %}">
+                  <div class="card">
+                    <div class="card-header">
+                         <a href="{% url 'rapport_stock' %}" class="btn btn-primary">Stock Report</a> <a href="{% url 'add_unite_mesure' %}" class="btn btn-primary">Purchase Report</a>
+                        <a href="{% url 'add_unite_mesure' %}" class="btn btn-primary">Supplier Report</a> <a href="{% url 'add_unite_mesure' %}" class="btn btn-primary">Custom Report</a> <a href="{% url 'add_unite_mesure' %}" class="btn btn-primary">Payout Report</a>
+                        <div class="card-tools">
+                      </div>
+                    </div>
+                    <!---Entete du -->
+                    <div class="card-header">
+                       
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    
+                                    <tr>
+                                        <th><label>Selectionner le rapport voulu</label>
+                                            <select id="typePaiementSelect" class="form-control" onchange="showReport()">
+                                                <option value="Sale Summary">Sale Summary</option>
+                                                <option value="Sale Summary between two Dates">Sale Summary between two Dates</option>
+                                                <option value="Sale Summary Without TCA of Complementary">Sale Summary Without TCA of Complementary</option>
+                                                <option value="Sale Summary by User">Sale Summary by User</option>
+                                                <option value="Sale Summary by User Without TCA of Complementary">Sale Summary by User Without TCA of Complementary</option>
+                                                <option value="List All Payment">List All Payment</option>
+                                                <option value="List All Payment by User">List All Payment by User</option>
+                                                <option value="List Payment between two Dates">List Payment between two Dates</option>
+                                                <option value="List Payment between two Dates by User">List Payment between two Dates by User</option>
+                                                <option value="List All Receipt Deleted">List All Receipt Deleted</option>
+                                            </select>
+                                        </th>
+                                        <th>
+                                            <label >Employe</label>
+                                                <select class="form-control"   name="employe">
+                                                    {% for employe in employe_info %}
+                                                    <option value="{{ employe.id }}">{{ employe.prenomp }} {{ employe.nomp }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                        </th>
+                                        
+                                    </tr>
+                                        <tr>
+                                            <th>
+
+                                                <label>Selectionner les dates</label>
+                                                <input type="datetime-local" class="form-control" id="date_debut" name="date_debut" required></th>
+                                            </th>
+                                            <th>
+                                                <input type="datetime-local" class="form-control" id="date_fin" name="date_fin" required></th>
+                                                                                        
+                                            </th>
+                                           
+                                            <th>
+                                                <label>Selectionner Period</label>
+                                                <select id="period" class="form-control" name="period" onchange="selectionnerTypePaiement()">
+                                                    <option value="Today">Today</option>
+                                                    <option value="Yesterday">Yesterday</option>
+                                                    <option value="This Week">This Week</option>
+                                                    <option value="Last Week">Last Week</option>
+                                                    <option value="This Month">This Month</option>
+                                                    <option value="Last Month">Last Month</option>
+                                                    <option value="This Year">This Year</option>
+                                                    <option value="Last Year">Last Year</option>
+                                                </select>
+                                                                                        
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th><button type="button"  id="payerButton" class="btn btn-primary btn-block" onclick="submitDates(event)">Show Report</button></th><th><input type="input" class="form-control" id="date_verif" name="verif" ></th><th><input type="input" class="form-control" id="date_verif2" name="verif2" ></th>
+                                        </tr>
+                    
+                                </thead>
+                            </table>
+                          
+                        <div class="card-tools">
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!--Rapport sur les Paiements (List All Payment)-->
+                    <div id="list_all_payment" class="card-body table-responsive p-0" style="display: none;">
+                      <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            
+                            <th>Id</th>
+                            <th>Receipt #</th>
+                            <th>Date Paiement</th>
+                            <th>Type Paiement</th>
+                            <th>Montant</th>
+                            <th>Tender</th>
+                            <th>Day Rate</th>
+                            <th>User </th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for paiement in paiement_info %}
+                          <tr>
+                            <td>{{ paiement.num_paiement }}</td>
+                            <td>{{ paiement.receipt.num_receipt}}</td>
+                            <td>{{ paiement.date_paiement }}</td>
+                            <td>{{ paiement.type_paiement }}</td>
+                            <td>{{ paiement.montant }}</td>
+                            <td>{{ paiement.tender }}</td>
+                            <td>{{ paiement.day_rate }}</td>
+                            <td>{{ paiement.user_paie }}</td>
+
+                            <td><a href="" class="btn btn-danger">Supprimer</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>   
+                    <!-- Rapport des ventes (List All Sales)-->
+                    <div class="card" id="sale_summary" style="display: none; margin: auto; width: 80%;">
+                        <div class="card-header">
+                            <h3 class="card-title">Sales Summary</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Amount</th>
+                                            <th></th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Total Amount (Cash):</td>
+                                            <td><span id="total_cash">{{ total_cash }}</span></td>
+                                            <td>Balance Cash:</td>
+                                            <td><span id="total_balancecash">{{ total_account }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total US Cash:</td>
+                                            <td><span id="total_uscash">{{ total_us_cash }}</span></td>
+                                            <td>US Cash Exchange</td>
+                                            <td><span id="total_excahangecash">{{ exchange_us }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dollard Card:</td>
+                                            <td><span id="total_cashht">{{ total_dollarcard }}</span></td>
+                                            <td>US Card Exchange:</td>
+                                            <td><span id="total_ttc">{{ exchange_dollarcard }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Sogecarte:</td>
+                                            <td><span id="total_cash">{{ total_sogecarte }}</span></td>
+                                            <td>Total Unicarte:</td>
+                                            <td><span id="total_gain">{{ total_unicarte }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Natcash:</td>
+                                            <td><span id="total_uscash">{{ total_natcash }}</span></td>
+                                            <td>Total Moncash</td>
+                                            <td><span id="total_excahangecash">{{ total_moncash }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Zelle:</td>
+                                            <td><span id="total_cash">{{ total_zelle }}</span></td>
+                                            <td>US Zelle Exchange:</td>
+                                            <td><span id="total_gain">{{ exchange_zelle }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Cash App:</td>
+                                            <td><span id="total_uscash">{{ total_cashapp }}</span></td>
+                                            <td>Us Cash App Exchange:</td>
+                                            <td><span id="total_excahangecash">{{ exchange_cashapp }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Complementary:</td>
+                                            <td><span id="total_uscash">{{ total_complementary }}</span></td>
+                                            <td>Total Discount:</td>
+                                            <td><span id="total_excahangecash">{{ total_discount }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Service Charges:</td>
+                                            <td><span id="total_uscash">{{ total_servicecharge }}</span></td>
+                                            <td>Total Tax:</td>
+                                            <td><span id="total_excahangecash">{{ total_tax }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sub Total (Total HT):</td>
+                                            <td><span id="total_cashht">{{ total_complementary }}</span></td>
+                                            <td>Grand Total (TTC):</td>
+                                            <td><span id="total_ttc">{{ grands_total }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Payout:</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                            <td>Income Net (Gain):</td>
+                                            <td><span id="total_gain">{{ gains }}</span></td>
+                                        </tr>
+                                        <!-- Add more rows for other payment types -->
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <!--Rapport  (List All Sales) betwen two dates-->
+                    
+                    <div class="card" id="sale_summary_between_two_dates" style="display: none; margin: auto; width: 80%;">
+                        <div class="card-header">
+                            <h3 class="card-title">Sales Summary Between Two Dates</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                
+                                
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Amount</th>
+                                            <th></th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Total Amount (Cash):</td>
+                                            <td><span id="total_cash">{{ total_cash }}</span></td>
+                                            <td>Balance Cash:</td>
+                                            <td><span id="total_balancecash">{{ total_account }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total US Cash:</td>
+                                            <td><span id="total_uscash">{{ total_us_cash }}</span></td>
+                                            <td>US Cash Exchange</td>
+                                            <td><span id="total_excahangecash">{{ exchange_us }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dollard Card:</td>
+                                            <td><span id="total_cashht">{{ total_dollarcard }}</span></td>
+                                            <td>US Card Exchange:</td>
+                                            <td><span id="total_ttc">{{ exchange_dollarcard }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Sogecarte:</td>
+                                            <td><span id="total_cash">{{ total_sogecarte }}</span></td>
+                                            <td>Total Unicarte:</td>
+                                            <td><span id="total_gain">{{ total_unicarte }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Natcash:</td>
+                                            <td><span id="total_uscash">{{ total_natcash }}</span></td>
+                                            <td>Total Moncash</td>
+                                            <td><span id="total_excahangecash">{{ total_moncash }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Zelle:</td>
+                                            <td><span id="total_cash">{{ total_zelle }}</span></td>
+                                            <td>US Zelle Exchange:</td>
+                                            <td><span id="total_gain">{{ exchange_zelle }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Cash App:</td>
+                                            <td><span id="total_uscash">{{ total_cashapp }}</span></td>
+                                            <td>Us Cash App Exchange:</td>
+                                            <td><span id="total_excahangecash">{{ exchange_cashapp }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Complementary:</td>
+                                            <td><span id="total_uscash">{{ total_complementary }}</span></td>
+                                            <td>Total Discount:</td>
+                                            <td><span id="total_excahangecash">{{ total_discount }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Service Charges:</td>
+                                            <td><span id="total_uscash">{{ total_servicecharge }}</span></td>
+                                            <td>Total Tax:</td>
+                                            <td><span id="total_excahangecash">{{ total_tax }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sub Total (Total HT):</td>
+                                            <td><span id="total_cashht">{{ total_complementary }}</span></td>
+                                            <td>Grand Total (TTC):</td>
+                                            <td><span id="total_ttc">{{ grands_total }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Payout:</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                            <td>Income Net (Gain):</td>
+                                            <td><span id="total_gain">{{ gains }}</span></td>
+                                        </tr>
+                                        <!-- Add more rows for other payment types -->
+                                    </tbody>
+                                </table>
+                              
+                               
+                            </div>
+                        </div>
+                    </div>
+                
+                     <!-- Rapport des ventes (List All Sales without TCA and Complementary)-->
+                     <div class="card" id="sale_summary_without_tca_of_complementary" style="display: none; margin: auto; width: 80%;">
+                        <div class="card-header">
+                            <h3 class="card-title">Sales Summary Without TCA and Complementary</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                {% for receipt_info in receipt_info %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Amount</th>
+                                            <th></th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Total Amount (Cash):</td>
+                                            <td><span id="total_cash">{{ receipt_info.0 }}</span></td>
+                                            <td>Balance Cash:</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total US Cash:</td>
+                                            <td><span id="total_cash">{{ receipt_info.1}}</span></td>
+                                            <td>US Cash Exchange</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td>Total SogeCarte:</td>
+                                            <td><span id="total_cash">{{ receipt_info.6 }}</span></td>
+                                            <td>Total UniCarte:</td>
+                                            <td><span id="total_cash">{{ receipt_info.5 }} </span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Dollar Card:</td>
+                                            <td><span id="total_cash">{{ receipt_info.7 }}</span></td>
+                                            <td>US Card Exhange:</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Check:</td>
+                                            <td><span id="total_cash">{{ receipt_info.3 }}</span></td>
+                                            <td>Total Account:</td>
+                                            <td><span id="total_cash">{{ receipt_info.2 }}</span></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td>Total NATCASH:</td>
+                                            <td><span id="total_cash">{{ receipt_info.10 }}</span></td>
+                                            <td>Total MONCASH</td>
+                                            <td><span id="total_cash">{{ receipt_info.11}}</span></td>
+                                        </tr>
+        
+                                        <tr>
+                                            <td>Total ZELLE:</td>
+                                            <td><span id="total_cash">{{ receipt_info.8 }}</span></td>
+                                            <td>US ZELLE Exchange :</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Total CASH APP:</td>
+                                            <td><span id="total_cash">{{ receipt_info.9 }}</span></td>
+                                            <td>US Cash App Exchange:</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Balance Payment:</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                            <td>Total Item Sale:</td>
+                                            <td><span id="total_cash">{{ receipt_info.13 }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Complementary:</td>
+                                            <td><span id="total_cash">0 </span></td>
+                                            <td>Total TCA 10%:</td>
+                                            <td><span id="total_cash">0</span></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td>Total Service Charge:</td>
+                                            <td><span id="total_cash">{{ receipt_info.18 }}</span></td>
+                                            <td>Total Discount:</td>
+                                            <td><span id="total_cash">{{ receipt_info.17}}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sub Total (Total HT):</td>
+                                            <td><span id="total_cash">{{ receipt_info.16 }}</span></td>{% endfor %}
+                                            <td>Grand Total (TTC):</td>
+                                            <td><span id="total_cash">{{ grand_total_without_tca_complementary }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Payout:</td>
+                                            <td><span id="total_cash">0.00</span></td>
+                                            <td>Income Net (Gain):</td>
+                                            <td><span id="total_cash">{{ gain_without_tca_complementary }}</span></td>
+                                        </tr>
+                                        <!-- Add more rows for other payment types -->
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    
+                    </div>
+                    <!-- Pagination -->
+                    <nav class="mt-4">
+                      {% if article_info.has_other_pages %}
+                      <ul class="pagination justify-content-left">
+                        {% if article_info.has_previous %}
+                        <a href="?page= 1 " class="btn btn-outline-primary mb-4" style="width: 69 px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">First</a>
+                        <li class="page-item"><a class="page-link" href="?page={{ article_info.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a></li>
+                        {% else %}
+                        <li class="page-item disabled"></li>
+                        {% endif %}
+                        
+                        {% for i in article_info.paginator.page_range %}
+                          {% if article_info.number == 1 %}
+                          <li class="page-item active"><span class="page-link">{{ i }}<span class="sr-only"></span></span></li>
+                          {% else %}
+                          <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                          {% endif %}
+                        {% endfor %}
+
+                        {% if article_info.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ article_info.next_page_number }}" ><i class="fas fa-angle-double-right"></i></a></li>
+                        <a href="?page={{ article_info.paginator.num_pages }}" class="btn btn-outline-primary mb-4" style="width:60px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">Last</a>
+                        {% else %}
+                        <li class="page-item disabled"></li>
+                        {% endif %}
+                      </ul>
+                    {% endif %}
+                    </nav>
+                    <!-- /.card-body -->
+                  </div>
+                </from>
+                  <!-- /.card -->
+                </div>
+              </div>
+            </div>
+        </div>
+    </section>
+      <!-- /.content -->
+{% endblock main_content %}
+{% block custom_js %}
+
+<script>
+// Ajouter un écouteur d'événements pour le changement de la date de début
+document.getElementById('date_debut').addEventListener('change', function() {
+        // Récupérer la valeur de la date de début
+        var dateDebut = document.getElementById('date_debut').value;
+
+        // Convertir la chaîne de caractères en objet Date
+        var date = new Date(dateDebut);
+
+        // Formatter la date dans le format requis
+        var formattedDate = date.toISOString().replace("T", " ").replace("Z", "");
+       
+        document.getElementById('date_verif').value = formattedDate;
+    });
+
+    // Ajouter un écouteur d'événements pour le changement de la date de fin
+    document.getElementById('date_fin').addEventListener('change', function() {
+        // Récupérer la valeur de la date de fin
+        var dateFin = document.getElementById('date_fin').value;
+
+        var date2 = new Date(dateFin);
+
+        var formattedDate2 = date2.toISOString().replace("T", " ").replace("Z", "");
+
+        // Mettre à jour la valeur de l'input verif2 avec la date de fin sélectionnée
+        document.getElementById('date_verif2').value = formattedDate2;
+    });
+
+    function showReport() {
+        submitDates(event);
+        // Autres actions à effectuer lors de la soumission du formulaire
+    }
+    
+    function submitDates(event) {
+        // Récupérer les valeurs des dates et des vérifications
+        var dateDebut = document.getElementById('date_debut').value;
+        var dateFin = document.getElementById('date_fin').value;
+        var dateVerif = document.getElementById('date_verif').value;
+        var dateVerif2 = document.getElementById('date_verif2').value;
+
+        // Envoyer une requête AJAX
+        $.ajax({
+            type: 'GET',
+            url: '{% url "rapport_vente" %}',
+            data: {
+                'date_debut': dateDebut,
+                'date_fin': dateFin,
+                'verif': dateVerif,
+                'verif2': dateVerif2
+            },
+            success: function(response) {
+                // Mettre à jour le contenu de la page avec les données reçues
+                document.getElementById('result').innerHTML = response.message;
+                // Mettre à jour d'autres éléments de la page avec les données reçues
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    }
+//}
+
+function showReport() {
+        
+        submitDates(event);
+        // Get the selected value from the dropdown
+        var selectedOption = document.getElementById("typePaiementSelect").value;
+        //var dateDebut = document.getElementById("date_debut").value;
+        //var dateFin = document.getElementById("date_fin").value;
+    
+        // Check if the selected option is "List All Payment"
+        if (selectedOption === "List All Payment") {
+            submitDates(event);
+            document.getElementById("list_all_payment").style.display = "block";
+            // Hide the div with id "list_all_sales"
+            document.getElementById("sale_summary").style.display = "none";
+            document.getElementById("sale_summary_without_tca_of_complementary").style.display = "none";
+            document.getElementById("sale_summary_between_two_dates").style.display = "none"
+
+        } else if (selectedOption === "Sale Summary") {
+            submitDates(event);
+            // Show the div with id "list_all_sales"
+            document.getElementById("sale_summary").style.display = "block";
+            // Hide the div with id "list_all_payment"
+            document.getElementById("list_all_payment").style.display = "none";
+            document.getElementById("sale_summary_without_tca_of_complementary").style.display = "none";
+            document.getElementById("sale_summary_between_two_dates").style.display = "none"
+        
+        } 
+        else if(selectedOption ==="Sale Summary Without TCA of Complementary"){
+           submitDates(event);
+            document.getElementById("sale_summary").style.display = "none";
+            // Hide the div with id "list_all_payment"
+            document.getElementById("list_all_payment").style.display = "none";
+            document.getElementById("sale_summary_without_tca_of_complementary").style.display = "block";
+            document.getElementById("sale_summary_between_two_dates").style.display = "none"
+        }
+       
+        else if (selectedOption === "Sale Summary between two Dates") {
+        submitDates(event);
+        //document.getElementById("date_verif").value = document.getElementById("date_debut").value;
+        document.getElementById("sale_summary").style.display = "none";
+        document.getElementById("list_all_payment").style.display = "none";
+        document.getElementById("sale_summary_without_tca_of_complementary").style.display = "none";
+        document.getElementById("sale_summary_between_two_dates").style.display = "block";
+    
+    } 
+        else {
+            // Hide both divisions if neither option is selected
+            document.getElementById("list_all_payment").style.display = "none";
+            document.getElementById("sale_summary").style.display = "none";
+            document.getElementById("sale_summary_without_tca_of_complementary").style.display = "none";
+            document.getElementById("sale_summary_between_two_dates").style.display = "none";
+        }
+ 
+    }
+</script>
+
+{% endblock custom_js %}

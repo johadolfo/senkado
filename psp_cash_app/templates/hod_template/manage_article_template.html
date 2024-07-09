@@ -1,0 +1,130 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %}
+ Liste des Articles
+ {% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                        
+                        <a href="{% url 'add_tbarticle' %}" class="btn btn-primary">AJouter Nouveau</a> <a href="{% url 'add_departement' %}" class="btn btn-primary">Ajouter Departement</a> <a href="{% url 'add_unite_mesure' %}" class="btn btn-primary">Ajouter Unite de Mesure</a> <a href="{% url 'manage_ajustement' %}" class="btn btn-primary">Ajustement History</a>
+                      
+                      <div class="card-tools">
+                        <form>
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                            <input type="text" name="q" class="form-control float-right" placeholder="Search">
+                            <div class="input-group-append">
+                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                            <a href="{% url 'manage_article' %}" class="btn btn-dark" style="margin-left: 2px";><i class="fas fa-sync-alt"></i></a>
+                            </div>
+                            </div>
+                      </form>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+                      <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            
+                            <th>Code Article</th>
+                            <th>Departement</th>
+                            <th>Description</th>
+                            <th>Description 1</th>
+                            <th>Unite de Mesure</th>
+                            <th>Cout Unite</th>
+                            <th>Quantite</th>
+                            <th>Prix</th>
+                            <th>ReoderPoint</th>
+                            <th>Date Expiration</th>
+                            <th>Disponibilite</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for article in article_info %}
+                          <tr>
+                            <td>{{ article.code_articl }}</td>
+                            <td>{{ article.code_departement.departement }}</td>
+                            <td>{{ article.description }}</td>
+                            <td>{{ article.description2 }}</td>
+                            <td>{{ article.unite_mesure.unite_mesure }}</td>
+                            <td>{{ article.cout_unit }}</td>
+                            <td>{{ article.quantite }}</td>
+                            <td>{{ article.prix }}</td>
+                            <td>{{ article.reoderpoint }}</td>
+                            <td>{{ article.date_expiration }}</td>
+                            <td>
+                              {% if article.quantite != 0 %}
+                              <button type="button" class="btn btn-success" disabled="disabled" data-toggle="modal" data-target="#reply_modal"> OUI </button>
+                              {% else %}
+                              <button type="button" class="btn btn-danger" disabled="disabled" data-toggle="modal" data-target="#reply_modal">NON</button>
+                              {% endif %}
+
+                            </td>
+                            <td><a href="/edit_article/{{ article.code_articl }}" class="btn btn-success">Edit</a></td><td><a href="{% url 'supprimer_article' article.code_articl %}" class="btn btn-danger">Supprimer</a></td><td><a href="/ajuster_article/{{ article.id }}" class="btn btn-primary">Ajuster</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- Pagination -->
+                    <nav class="mt-4">
+                      {% if article_info.has_other_pages %}
+                      <ul class="pagination justify-content-left">
+                        {% if article_info.has_previous %}
+                        <a href="?page= 1 " class="btn btn-outline-primary mb-4" style="width: 69 px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">First</a>
+                        <li class="page-item"><a class="page-link" href="?page={{ article_info.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a></li>
+                        {% else %}
+                        <li class="page-item disabled"></li>
+                        {% endif %}
+                        
+                        {% for i in article_info.paginator.page_range %}
+                          {% if article_info.number == 1 %}
+                          <li class="page-item active"><span class="page-link">{{ i }}<span class="sr-only"></span></span></li>
+                          {% else %}
+                          <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                          {% endif %}
+                        {% endfor %}
+
+                        {% if article_info.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ article_info.next_page_number }}" ><i class="fas fa-angle-double-right"></i></a></li>
+                        <a href="?page={{ article_info.paginator.num_pages }}" class="btn btn-outline-primary mb-4" style="width:60px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">Last</a>
+                        {% else %}
+                        <li class="page-item disabled"></li>
+                        {% endif %}
+                      </ul>
+                    {% endif %}
+                    </nav>
+                    <!-- /.card-body -->
+                  </div>
+                  <!-- /.card -->
+                </div>
+              </div>
+            </div>
+        </div>
+    </section>
+      <!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+$(document).ready(function() {
+  $(".btn-danger").on("click", function(event) {
+    event.preventDefault(); // Empêche le lien de fonctionner immédiatement
+
+    // Afficher une boîte de dialogue de confirmation
+    var result = confirm("Voulez-vous vraiment supprimer cette cotisation ?");
+
+    // Si l'utilisateur clique sur "OK" dans la boîte de dialogue, rediriger vers la vue de suppression
+    if (result) {
+      window.location.href = $(this).attr("href");
+    }
+  });
+});
+</script>
+{% endblock custom_js %}

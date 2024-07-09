@@ -1,0 +1,118 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %}
+ Historicite Ajustement
+ {% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                       Details Ajustement
+                      <div class="card-tools">
+                        <form>
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                            <input type="text" name="q" class="form-control float-right" placeholder="Search">
+                            <div class="input-group-append">
+                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                            <a href="{% url 'manage_article' %}" class="btn btn-dark" style="margin-left: 2px";><i class="fas fa-sync-alt"></i></a>
+                            </div>
+                            </div>
+                      </form>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+                      <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr> 
+                            <th>Code Ajustement</th>
+                            <th>Article</th>
+                            <th>Ancienne Quantite</th>
+                            <th>Nouvelle Quantite</th>
+                            <th>Ancien Cout</th>
+                            <th>Nouveau Cout</th>
+                            <th>Ancien Prix</th>
+                            <th>Nouveau Prix</th>
+                            <th>Date Ajustement</th>
+                            <th>Memo</th>
+                            <th>Recu Par</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for ajustement in ajustement_info_paginated %}
+                          <tr>
+                            <td>{{ ajustement.code_ajustement.id }}</td>
+                            <td>{{ ajustement.code_article.description }}</td>
+                            <td>{{ ajustement.anc_quantite }}</td>
+                            <td>{{ ajustement.nouv_quantite }}</td>
+                            <td>{{ ajustement.anc_cout }}</td>
+                            <td>{{ ajustement.nouv_cout }}</td>
+                            <td>{{ ajustement.anc_prix }}</td>
+                            <td>{{ ajustement.nouv_prix }}</td>
+                            <td>{{ ajustement.code_ajustement.date_ajustement }}</td>
+                            <td>{{ ajustement.memo }}</td>
+                            <td>{{ ajustement.code_ajustement.recu_par }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- Pagination -->
+                    <nav class="mt-4">
+                      {% if ajustement_info_paginated.has_other_pages %}
+                      <ul class="pagination justify-content-left">
+                        {% if ajustement_info_paginated.has_previous %}
+                        <a href="?page= 1 " class="btn btn-outline-primary mb-4" style="width: 69 px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">First</a>
+                        <li class="page-item"><a class="page-link" href="?page={{ ajustement_info_paginated.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a></li>
+                        {% else %}
+                        <li class="page-item disabled"></li>
+                        {% endif %}
+                        
+                        {% for i in ajustement_info_paginated.paginator.page_range %}
+                          {% if ajustement_info_paginated.number == 1 %}
+                          <li class="page-item active"><span class="page-link">{{ i }}<span class="sr-only"></span></span></li>
+                          {% else %}
+                          <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                          {% endif %}
+                        {% endfor %}
+
+                        {% if ajustement_info_paginated.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ ajustement_info_paginated.next_page_number }}" ><i class="fas fa-angle-double-right"></i></a></li>
+                        <a href="?page={{ ajustement_info_paginated.paginator.num_pages }}" class="btn btn-outline-primary mb-4" style="width:60px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">Last</a>
+                        {% else %}
+                        <li class="page-item disabled"></li>
+                        {% endif %}
+                      </ul>
+                    {% endif %}
+                    </nav>
+                    <!-- /.card-body -->
+                  </div>
+                  <!-- /.card -->
+                </div>
+              </div>
+            </div>
+        </div>
+    </section>
+      <!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+$(document).ready(function() {
+  $(".btn-danger").on("click", function(event) {
+    event.preventDefault(); // Empêche le lien de fonctionner immédiatement
+
+    // Afficher une boîte de dialogue de confirmation
+    var result = confirm("Voulez-vous vraiment supprimer cette cotisation ?");
+
+    // Si l'utilisateur clique sur "OK" dans la boîte de dialogue, rediriger vers la vue de suppression
+    if (result) {
+      window.location.href = $(this).attr("href");
+    }
+  });
+});
+</script>
+{% endblock custom_js %}

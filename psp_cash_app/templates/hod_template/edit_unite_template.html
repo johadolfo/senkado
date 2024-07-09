@@ -1,0 +1,60 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+Edit Unite de Meusre | Unite ID : {{ unite.id }}
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Edit Unite</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <!-- form start -->
+                      <form role="form" action="/edit_unite_save" method="post">
+                        {% csrf_token %}
+                        <div class="card-body">
+  
+                            <div class="form-group">
+                              <label>Id Unite</label>
+                              <input type="text" class="form-control" name="id_unite" value="{{ unite.id }}">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Unite de Mesure</label>
+                              <input type="text" class="form-control" name="unite_mesure" placeholder="Entrer le nom de l'unite de mesure " value="{{ unite.unite_mesure }}">
+                            </div>
+
+                          <div class="form-group">
+                            {% if messages %}
+                            <div class="col-12">
+                              {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                              <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% if message.tags == 'success' %}
+                              <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-block">Edit Unite</button>
+                        </div>
+                      </form>
+                </div>
+                    <!-- /.card -->
+              </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      {% endblock main_content %}

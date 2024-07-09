@@ -1,0 +1,185 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+<button type="button" class="btn btn-success" data-toggle="modal" onclick="toggleForm()" >Suppression des DROITS</button>
+
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <style>
+        .hidden {
+            display: none;
+        }
+      </style>
+    <section class="content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title" >Donnez Access a un Utilisateur</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div style="margin-left: 1%; margin-right: 1%;">
+                        <form  role="form" action="/add_access_right" method="post" id="form1">
+                            {% csrf_token %}
+
+                            <div class="form-group">
+                                <label >Membre</label>
+                                <select id="selectOption" class="form-control"   name="membre">
+                                    {% for membre in membres %}
+                                    <option value="{{ membre.id }}">{{ membre.first_name }} {{ membre.last_name }}</option>
+                                    {% endfor %}
+    
+                                </select>
+                            </div>
+                            <hr>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                    <th>Droit</th>
+                                    <th>Sélectionner</th>
+                                    <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+    
+                                    {% for permiss in initial_data %}
+                                    <tr>
+                                    <td>{{ permiss.name }}</td>
+                                    <td><input type="checkbox" name="permis_info[]" value="{{ permiss.id }}"></td>
+                                    <td> <input type="text" id="id_membre" class="hidden" value="" name="valider_par" placeholder="Entrer le nom de la personne "></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+                                  <hr>          
+
+                                <div class="form-group">
+                                {% if messages %}
+                                <div class="col-12">
+                                {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                                {% endif %}
+                                {% if message.tags == 'success' %}
+                                <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                                {% endif %}
+                                {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Add Access</button>
+                        </form>
+                        </div>
+
+                        <div style="margin-left: 1%;">
+                            <form id="form2" class="hidden" action="#" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="type">LISTE DES UTILISATEURS AYANT DES DROITS</label>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Prenom</th>
+                                            <th>Nom</th>
+                                            <th>Droit Access</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for permission in permission_info %}
+                                        <tr>
+                                            <td>{{ permission.0 }}</td>
+                                            <td>{{ permission.2 }}</td>
+                                            <td>{{ permission.3 }}</td>
+                                            <td>{{ permission.5 }}</td>
+                                            <td>
+                                                <form id="delete-form-{{ forloop.counter }}" action="{% url 'supprimer_permission' permission.4 permission.1  %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger delete-btn">Supprimer</button>
+                                                </form>
+                                            </td>
+                                            <td><input type="hidden" class="form-control" value ="{{ permission.4 }}" name="code" placeholder="Entrer le nom de la personne "></td>
+                                            <td><input type="hidden" class="form-control" value ="{{ permission.1 }}" name="valider_par" placeholder="Entrer le nom de la personne "></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    
+                                </table>
+                                
+                            </form>
+                            
+                        </div>
+                        <script>
+                            function toggleForm() {
+                                var form1 = document.getElementById("form1");
+                                var form2 = document.getElementById("form2");
+                                //var form3 = document.getElementById("form3");
+                    
+                                form1.classList.toggle("hidden");
+                                form2.classList.toggle("hidden");
+                                //form3.classList.toggle("hidden");
+                            }
+                        </script>
+
+                    </div>
+                      <!-- /.card -->
+                  </div>
+                </div>
+            </div>
+        </section>
+<!-- /.content -->
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var radioInputs = document.querySelectorAll('.radio-input');
+    
+    for (var i = 0; i < radioInputs.length; i++) {
+      radioInputs[i].addEventListener('change', function() {
+        var targetInputId = this.getAttribute('data-target');
+        var targetInput = document.getElementById(targetInputId);
+        
+        if (this.checked) {
+          targetInput.removeAttribute('disabled');
+        } else {
+          targetInput.setAttribute('disabled', 'disabled');
+        }
+      });
+    }
+  });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $(".delete-btn").on("click", function(event) {
+            event.preventDefault(); // Empêche la soumission du formulaire par défaut
+
+            // Afficher une boîte de dialogue de confirmation
+            var result = confirm("Voulez-vous vraiment supprimer ce droit ?");
+
+            // Si l'utilisateur clique sur "OK" dans la boîte de dialogue, soumettre le formulaire de suppression
+            if (result) {
+            $(this).closest("form").submit(); // Soumettre le formulaire parent
+            }
+        });
+        })
+    </script>
+    
+<script>
+    document.getElementById('selectOption').addEventListener('change', function() {
+    var selectedOption = this.value;
+    document.getElementById('id_membre').value = selectedOption;
+});
+</script>
+
+
+{% endblock custom_js %}

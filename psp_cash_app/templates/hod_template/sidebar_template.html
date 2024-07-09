@@ -1,0 +1,136 @@
+{% load static %}
+<style>
+  .color_bar {
+      background-color: {{ user.muso.couleur_preferee }};
+  }
+      /* Autres propriétés CSS */
+  .color_text {
+      color: {{ user.muso.couleur_text_menu }};
+      /* Autres propriétés CSS */
+  }
+</style>
+<aside class="main-sidebar color_bar elevation-4">
+    <!-- Brand Logo -->
+    <div style="display: flex; align-items: center;">
+      <img src="{{ user.compagnie.logoPath }}" class="img-circle elevation-2" alt="User Image" style="width: 70px; height: 70px;">
+     
+      <a href="/edit_compagnie/{{ compagnie.id }}" class="d-block"><h2 style="margin-left: 10px; color:rgb(255, 179, 0);">{{ user.compagnie.compagnie }}</h2></a>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar ">
+      
+      <!-- Sidebar Menu -->
+      <nav class="mt-2 ">
+        <ul class="nav nav-pills nav-sidebar flex-column " data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+            <li class="nav-item">
+                {% url 'admin_home' as admin_home %}
+                <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% endif %}">
+                  <i class="nav-icon fas fa-th color_text"></i>
+                  <p class="color_text">
+                    Home
+                   
+                  </p>
+                </a>
+          </li>
+
+
+          <li class="nav-item ">
+            {% url 'manage_article' as manage_article %}
+            <a href="{% url 'manage_article' %}" class="nav-link {% if request.path == manage_article %} active {% endif %}{% if request.path == manage_article %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Liste des Articles
+               
+              </p>
+            </a>
+          </li>
+
+         
+         
+          <li class="nav-item">
+            {% url 'manage_employe' as manage_employe %}
+            <a href="{% url 'manage_employe' %}" class="nav-link {% if request.path == manage_employe %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Liste des Employes
+              
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            {% url 'manage_receipt' as manage_receipt %}
+            <a href="{% url 'manage_receipt' %}" class="nav-link {% if request.path == manage_receipt %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Liste des Ventes
+              
+              </p>
+            </a>
+          </li>
+
+          
+          <li class="nav-item">
+            {% url 'rapport_vente' as rapport_vente %}
+           
+            <a href="{% url 'rapport_vente' %}" class="nav-link {% if request.path == rapport_vente %} active {% endif %}{% if request.path == rapport_vente %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+               Rapport des Ventes
+              </p>
+            </a>
+          </li>
+
+         
+          
+       
+
+
+          <li class="nav-item">
+            {% url 'tab_open' as tab_open %}
+           
+            <a href="{% url 'tab_open' %}" class="nav-link {% if request.path == tab_open %} active {% endif %}{% if request.path == tab_open %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+               List Tab Open
+              </p>
+            </a>
+          </li>
+
+
+          <li class="nav-item">
+            {% url 'add_depense' as add_depense %}
+            <a href="{% url 'add_depense' %}" class="nav-link {% if request.path == add_depense %} active {% endif %}{% if request.path == add_depense  %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Liste des Depenses
+                
+              </p>
+            </a>
+          </li>
+
+ 
+
+          <li class="nav-item">
+            {% url 'GUtilisateur' as gestion_user %}
+            <a href="{% url 'GUtilisateur' %}" class="nav-link {% if request.path == GUtilisateur %} active {% endif %}">
+              <i class="nav-icon fas fa-th color_text"></i>
+              <p class="color_text">
+                Gestion des Utilisateurs
+              </p>
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+  {% block custom_js %}
+
+
+  {% endblock custom_js %}

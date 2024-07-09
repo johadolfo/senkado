@@ -1,0 +1,117 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+Edit Employe | Employe CODE : {{ employe_info.codep }}
+<!-- | Subject Name : {{ subject.subject_name }} | Subject ID : {{ subject.id }} -->
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Edit Employe</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <!-- form start -->
+                      <form role="form" action="/edit_employe_save" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" class="form-control" name="email"  value="{{ employe_info.admin.email }}">
+                            </div>
+     
+                            <div class="form-group">
+                                <label>Mot de Pass</label>
+                                <input type="text" class="form-control" name="password"  >
+                            </div>
+
+                            <div class="form-group">
+                              <label>Code Employe</label>
+                              <input type="text" class="form-control" name="code_employe" value="{{ employe_info.codep }}">
+                              <input type="hidden" class="form-control" name="id_emp" value="{{ employe_info.admin_id }}">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Nom</label>
+                              <input type="text" class="form-control" name="nom"  value="{{ employe_info.nomp }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Prenom</label>
+                                <input type="text" class="form-control" name="prenom"  value="{{ employe_info.prenomp }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Adresse </label>
+                                <input type="text" class="form-control" name="adresse"  value="{{ employe_info.adresse }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Phone Mobile</label>
+                                <input type="text" class="form-control" name="tel_mobile"  value="{{ employe_info.tel_mob }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Phone House</label>
+                                <input type="text" class="form-control" name="tel_house"  value="{{ employe_info.tel_house }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>CIN</label>
+                                <input type="text" class="form-control" name="cin"  value="{{ employe_info.cin }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>NIF</label>
+                                <input type="text" class="form-control" name="nif"  value="{{ employe_info.nif }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Credit Limit</label>
+                                <input type="text" class="form-control" name="credit_limit"  value="{{ employe_info.credit_limit }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Account</label>
+                                <input type="text" class="form-control" name="account"  value="{{ employe_info.account }}">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Logo Path</label>
+                              <input type="file" class="form-control" name="logoPath" value="{{ employe_info.profile_pic }}">
+                          </div>
+
+                          <div class="form-group">
+                            {% if messages %}
+                            <div class="col-12">
+                              {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                              <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% if message.tags == 'success' %}
+                              <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-block">Edit Employe</button>
+                        </div>
+                      </form>
+                </div>
+                    <!-- /.card -->
+              </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      {% endblock main_content %}

@@ -1,0 +1,152 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %} 
+Ajouter Article
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Ajouter Article</h3>
+                      </div>
+
+                      <form role="form" action="/add_article_save" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="card-body">
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th> <label>Code Article </label>
+                                    <input type="text" class="form-control" name="code_article" placeholder="Entrer le code article "></th>
+                                  
+                                  </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th><label>Description </label>
+                                    <input type="text" class="form-control" name="description" placeholder="Entrer le nom de l'article "></th>
+                                    <th><label>Description 2</label>
+                                    <input type="text" class="form-control" name="description2" placeholder="Entrer le nom d'usine de l'article "></th>
+                                  </tr>
+                                  
+                                </thead>
+                            </table>
+                          </div>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th><label>Quantite </label>
+                                    <input type="text" class="form-control" name="quantite" placeholder="Entrer la quantite en stock "></th>
+                                    <th> <label>Unite de Mesure </label>
+                                        <select class="form-control"   name="unite_mesure">
+                                            {% for unite in unite_mesure %}
+                                            <option value="{{ unite.id }}">{{ unite.unite_mesure }}</option>
+                                            {% endfor %}
+            
+                                        </select></th>  
+                                  </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                              <thead>
+                                <tr>
+                                  <th><label>Departement / Categorie</label>
+                                    <select class="form-control"   name="departement">
+                                        {% for dept in departement %}
+                                        <option value="{{ dept.id }}">{{ dept.departement }}</option>
+                                        {% endfor %}
+        
+                                    </select>
+                                </th>
+  
+                                </tr>
+                              </thead>
+                          </table>
+                           
+                          </div>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th><label>Cout Unite</label>
+                                    <input type="text" class="form-control" name="cout" placeholder="Entrer le prix unitaire "></th>
+                                    <th><label>Prix Unitaire</label>
+                                    <input type="text" class="form-control" name="prix" placeholder="Entrer le prix unitaire "> </th>
+                                </tr>
+                                </thead>
+                            </table>
+
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                                    <th><label>ReoderPoint</label>
+                                    <input type="text" class="form-control" name="reoderpoint" placeholder="Entrer le reoderpoint "></th>
+                                    <th><label>Date Expiration </label>
+                                    <input type="date" class="form-control" name="date_expiration" placeholder="Entrer la date d'Expiration "></th>
+                                  </tr>
+                                </thead>
+                            </table>
+                          </div>
+                        <!-- 
+                          <div class="form-group">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                  <tr>
+                            <th><label>Article Pic</label>
+                            <input type="file" class="form-control" Required name="aricle_pic"></th>
+                                </tr>
+                              </thead>
+                            </table>
+                          </div> -->
+
+                          <div class="form-group">
+                            {% if messages %}
+                            <div class="col-12">
+                              {% for message in messages %}
+                              {% if message.tags == 'error' %}
+                              <div class="alert alert-danger" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% if message.tags == 'success' %}
+                              <div class="alert alert-success" style="margin-top:10px ;">{{ message }}</div>
+                              {% endif %}
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-block">Add Membre</button>
+                        </div>
+                      </form>
+                      <!-- /.card-header -->
+                      <!-- form start -->
+                      <!-- {% url 'add_membre_save' as action_path %}
+                     {% include 'hod_template/form_template.html' with  messages=messages form=form action_path=action_path  button_text="Ajouter Membre" %} -->
+              </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      {% endblock main_content %}
+      {% block custom_js %}
+
+      {% endblock custom_js %}

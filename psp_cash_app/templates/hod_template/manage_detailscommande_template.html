@@ -1,0 +1,118 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %}
+Details Commande | Receipt CODE : {{ receipt_info.0.receipt.num_receipt }}
+ {% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      
+                      <div class="card-tools">
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+                      <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            
+                            <th>Date</th>
+                            <th>Receipt #</th>
+                            <th>Line Number #</th>
+                            <th>Article</th>
+                            <th>Cout</th>
+                            <th>Quantite</th>
+                            <th>Price</th>
+                            <th>Discount Article</th>
+                            <th>Note</th>
+                            <th>Statut</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for receipt in receipt_info %}
+                          <tr>
+                            <td>{{ receipt.date_added }}</td>
+                            <td>{{ receipt.receipt.num_receipt}}</td>
+                            <td>{{ receipt.num_ligne }}</td>
+                            <td>{{ receipt.article.description }}</td>
+                            <td>{{ receipt.cout }}</td>
+                            <td>{{ receipt.quantite }}</td>
+                            <td>{{ receipt.prix }}</td>
+                            <td>{{ receipt.discount_article }}</td>
+                            <td>{{ receipt.observation }}</td>
+                         
+                            <td>
+                              {% if receipt.statut != "CLOSED" %}
+                              <button type="button" class="btn btn-success" disabled="disabled" data-toggle="modal" data-target="#reply_modal"> OPENNED </button>
+                              {% else %}
+                              <button type="button" class="btn btn-danger" disabled="disabled" data-toggle="modal" data-target="#reply_modal">CLOSED</button>
+                              {% endif %}
+
+                            </td>
+                            <td><a href="" class="btn btn-danger">Supprimer</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- Pagination -->
+                    <nav class="mt-4">
+                      {% if article_info.has_other_pages %}
+                      <ul class="pagination justify-content-left">
+                        {% if article_info.has_previous %}
+                        <a href="?page= 1 " class="btn btn-outline-primary mb-4" style="width: 69 px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">First</a>
+                        <li class="page-item"><a class="page-link" href="?page={{ article_info.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a></li>
+                        {% else %}
+                        <li class="page-item disabled"></li>
+                        {% endif %}
+                        
+                        {% for i in article_info.paginator.page_range %}
+                          {% if article_info.number == 1 %}
+                          <li class="page-item active"><span class="page-link">{{ i }}<span class="sr-only"></span></span></li>
+                          {% else %}
+                          <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                          {% endif %}
+                        {% endfor %}
+
+                        {% if article_info.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ article_info.next_page_number }}" ><i class="fas fa-angle-double-right"></i></a></li>
+                        <a href="?page={{ article_info.paginator.num_pages }}" class="btn btn-outline-primary mb-4" style="width:60px; border-radius:1px; border:1px solid #d3d3d3; border-left: 1px;">Last</a>
+                        {% else %}
+                        <li class="page-item disabled"></li>
+                        {% endif %}
+                      </ul>
+                    {% endif %}
+                    </nav>
+                    <!-- /.card-body -->
+                  </div>
+                  <!-- /.card -->
+                </div>
+              </div>
+            </div>
+        </div>
+    </section>
+      <!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+$(document).ready(function() {
+  $(".btn-danger").on("click", function(event) {
+    event.preventDefault(); // Empêche le lien de fonctionner immédiatement
+
+    // Afficher une boîte de dialogue de confirmation
+    var result = confirm("Voulez-vous vraiment supprimer cette cotisation ?");
+
+    // Si l'utilisateur clique sur "OK" dans la boîte de dialogue, rediriger vers la vue de suppression
+    if (result) {
+      window.location.href = $(this).attr("href");
+    }
+  });
+});
+</script>
+{% endblock custom_js %}

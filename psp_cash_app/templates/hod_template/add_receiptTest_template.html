@@ -1,0 +1,285 @@
+
+{% extends 'hod_template/base_template.html' %}
+{% load static %}
+{% block page_title %} 
+  Ajouter Article
+{% endblock page_title %}
+{% block main_content %}
+<style>
+    .button-container {
+        max-width: 300px; /* Largeur maximale du conteneur */
+        margin: 0 auto; /* Centrage du conteneur */
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #categoryButtonsContainer {
+        display: flex;
+        flex-wrap: wrap; /* Permet aux boutons de passer à la ligne lorsqu'ils atteignent la largeur maximale */
+    }
+
+    .categoryButton {
+        flex-basis: calc(50% - 10px); /* La base flexible est la moitié moins 10px pour l'espacement entre les colonnes */
+        max-width: calc(50% - 10px); /* La largeur maximale est la moitié moins 10px pour l'espacement entre les colonnes */
+        margin-bottom: 10px; /* Espacement entre les boutons */
+        background-color: #3498db; /* Couleur de fond */
+        color: #fff; /* Couleur du texte */
+        border: none; /* Supprime les bordures */
+        border-radius: 5px; /* Ajoute un peu de bordure arrondie */
+        padding: 10px; /* Ajoute un peu de rembourrage */
+        font-size: 16px; /* Taille de la police */
+        cursor: pointer; /* Afficher un curseur au survol */
+        transition: background-color 0.3s; /* Ajoute une transition douce pour le changement de couleur de fond */
+        margin-left: 10px;
+        margin-right: 10px;
+        white-space: normal;
+    }
+
+    .categoryButton:hover {
+        background-color: #2980b9; /* Changement de couleur de fond au survol */
+    }
+
+
+    #articleButtonsContainer {
+        display: flex;
+        flex-wrap: wrap; /* Permet aux boutons de passer à la ligne lorsqu'ils atteignent la largeur maximale */
+    }
+
+    /* Styles pour les boutons d'article */
+    .btn-success {
+        flex-grow: 1; /* Permettre aux boutons de s'étendre pour remplir l'espace disponible */
+        flex-shrink: 1; /* Permettre aux boutons de se réduire si nécessaire */
+        flex-basis: 0; /* Basé sur la taille du contenu */
+        max-width: 100%; /* Ajuster la largeur maximale si nécessaire */
+        margin: 5px; /* Espacement entre les boutons */
+    }
+
+    /* Styles pour le conteneur des boutons d'article */
+    .button-container-article {
+        max-width: 100%; /* Ajuster la largeur maximale au besoin */
+        margin: 0 auto; /* Centrer horizontalement */
+        margin-top: 20px; /* Espacement entre les catégories et les articles */
+        display: flex; /* Utiliser un conteneur flexible pour les boutons */
+        flex-wrap: wrap; /* Permettre aux boutons de passer à la ligne si nécessaire */
+        justify-content: space-around; /* Répartir les boutons de manière égale sur la ligne */
+    }
+        
+    
+    .articleButton:hover {
+        background-color: #2980b9; /* Changement de couleur de fond au survol */
+    }
+
+    /* Styles pour le conteneur du panier */
+    .panier {
+        max-width: 300px; /* Ajustez la taille maximale du conteneur du panier */
+        margin: 0 auto; /* Centrer horizontalement */
+        margin-top: 20px; /* Espacement entre les catégories/articles et le panier */
+        background-color: #f9f9f9; /* Couleur de fond du panier */
+        padding: 10px; /* Ajouter un peu de rembourrage */
+        border-radius: 5px; /* Ajouter un peu de bordure arrondie */
+    }
+
+    /* Styles pour les boutons du panier */
+    .panier button {
+        width: 100%; /* Boutons de la largeur du conteneur */
+        margin-bottom: 5px; /* Espacement entre les boutons */
+    }
+
+    /* Styles pour les listes d'articles du panier */
+    .panier ul {
+        list-style-type: none; /* Supprimer les puces de liste */
+        padding: 0; /* Supprimer le remplissage par défaut */
+    }
+
+    /* Styles pour les éléments de liste du panier */
+    .panier ul li {
+        margin-bottom: 5px; /* Espacement entre les éléments de liste */
+    }
+</style>
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Formulaires -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Ajouter Article</h3>
+            </div>
+
+            <form role="form" action="/add_receipt_save" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <!-- Contenu du formulaire -->
+              <div class="container">
+                <!-- Barre de recherche et boutons de vente -->
+                <div>
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                                <th>
+                                    <label>Item Barcode</label>
+                                    <form>
+                                        <div class="input-group input-group-sm" style="width: 500px;">
+                                        <input type="text" name="q" class="form-control  float-left" placeholder="Search">
+                                        <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                        <a href="{% url 'manage_article' %}" class="btn btn-dark" style="margin-left: 2px";><i class="fas fa-sync-alt"></i></a>
+                                        </div>
+                                        </div>
+                                  </form>
+                                </th>
+                                <th>
+                                    <label>Quantity Tab Open Progress</label>
+                                    <input type="text" class="form-control" name="tap_open" >
+                                </th>
+                                
+                                <th>
+                                    <button type="submit" class="btn btn-primary btn-block">Hold Redeipt</button>
+                                    <button type="submit" class="btn btn-primary btn-block">Void Receipt</button>
+                                 </th>
+                        </tr>
+                        </thead>
+                        </table>
+                </div>
+                
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                      <tr>
+           
+               
+                <!-- Articles -->
+            <th>
+                    <div class="button-container-article">
+                        <div id="articleButtonsContainer">
+                            {% for article in articles %}
+                            <a href="/remplirPanier/{{ article.code_articl }}" class="btn btn-success" data-prix="{{ article.prix }}">{{ article.description }}</a>
+               
+                                {% endfor %}
+                        </div>
+                    </div>
+                
+                </th> 
+                <!-- Liste des items et informations -->
+                <th>
+                
+
+                    <table class="table table-hover text-nowrap">
+                        <h4>Liste Items</h4>
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Quantite</th>
+                                    <th>Prix</th>
+                                    <th>Total</th>
+                                </tr> 
+                            </thead>
+                        <tbody>    
+                                <tr>
+                                        {% for article1 in article_info %}
+
+                                        <td>{{ article1.description }}</td>
+                                        <td>1</td>
+                                        <td>{{ article1.prix }}</td>
+                                        <td>{{ total }}</td>
+
+                                        {% endfor %}
+                                        
+                                </tr>
+                                    
+                        </tbody>
+                    </table>
+                            
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                        <button type="submit" class="btn btn-primary btn-block">Deposit</button>
+                                        <button type="submit" class="btn btn-primary btn-block">Pay</button>
+                                        </th>
+                                        <th>
+                                            Montant Hors Taxe:
+                                            <p>TCA:</p>
+                                            <p>Service Charges:</p>
+                                            <p>Rabais:</p>
+                                            <p>Montant TTC:</p>
+                                            <p>Balance:</p>
+                                        </th>
+                                        <th>
+                                            0.00
+                                            <p>0.00</p>
+                                            <p>0.00</p>
+                                            <p>0.00</p>
+                                            <p>0.00</p>
+                                            <p>0.00</p>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                    
+                    </th>
+                        <th>
+                                <!-- Boutons additionnels -->
+                                <div class="button-container">
+                                    <button type="submit" class="btn btn-primary btn-block">Change Quantity</button>
+                                    <button type="submit" class="btn btn-primary btn-block">+1 / -1</button>
+                                    <button type="submit" class="btn btn-primary btn-block">Remove Article</button>
+                                    <button type="submit" class="btn btn-primary btn-block">Line Discount</button>
+                                    <button type="submit" class="btn btn-primary btn-block">Add Separator</button>
+                                    <button type="submit" class="btn btn-primary btn-block">PS/Note</button>
+                                    <button type="submit" class="btn btn-primary btn-block">Service Charges</button>
+                                    <button type="submit" class="btn btn-primary btn-block">Receipt Dscount</button>
+                                </div>
+                        </th>
+                </tr>
+            </thead>
+        </table>
+              
+              <!-- Popup -->
+              <div id="popup" class="popup">
+                <!-- ... -->
+              </div>
+              <div id="overlay" class="overlay"></div>
+              <!-- Messages -->
+              <div class="form-group">
+                <!-- ... -->
+              </div>
+              <!-- /.card-body -->
+
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-block">Add Membre</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    if (typeof jQuery == 'undefined') {
+    console.log('jQuery n\'est pas chargé');
+} else {
+    console.log('jQuery est chargé');
+    // Votre code jQuery ici
+}
+</script>
+<script>
+    $(document).ready(function() {
+        $(".btn-successss").on("click", function(event) {
+            event.preventDefault(); // Empêche le lien de fonctionner immédiatement
+            
+            // Récupérer les informations sur l'article depuis le bouton cliqué
+            var description = $(this).text();
+            var prix = $(this).data('prix'); // Assurez-vous de définir l'attribut 'data-prix' dans vos boutons d'article
+            
+            // Ajouter une nouvelle ligne à la liste des articles dans le panier
+            var newRow = '<tr><td>' + description + '</td><td>1</td><td>' + prix + '</td><td>' + prix + '</td></tr>';
+            $('.panier table tbody').append(newRow);
+        });
+    });
+</script>
+{% endblock custom_js %}

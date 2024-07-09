@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+        .receipt-container {
+            width: 220px; /* Taille de la zone d'impression de la caisse enregistreuse */
+            margin: auto;
+            padding: 10px;
+            border: 1px solid #000;
+        }
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .logo {
+            max-width: 100px; /* Ajustez la taille du logo si nécessaire */
+            display: block;
+            margin: auto;
+        }
+        .receipt-info {
+            margin-bottom: 10px;
+        }
+        .receipt-bar {
+            border-top: 1px solid #000;
+            margin-bottom: 10px;
+        }
+        .receipt-items {
+            margin-bottom: 10px;
+        }
+        .receipt-total {
+            margin-bottom: 10px;
+        }
+        .receipt-footer {
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="receipt-header">
+            <img src="logo.png" alt="Logo" class="logo">
+        </div>
+        <div class="receipt-info">
+            <p>Receipt Number: 0000001</p>
+            <p>Date: 12/04/2024 </p>
+        </div>
+        <div class="receipt-business-info">
+            <p>ADROtech Multi-Services </p>
+            <p>12, santo 9</p>
+            <p>Phone: 0000-0000 // 1111-1111</p>
+        </div>
+        <div class="receipt-bar"></div>
+        <div class="receipt-items">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in panier %}
+                        <tr>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.price }}</td>
+                            <td>{{ item.total }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="receipt-total">
+            <p>Subtotal: {{ montant_ttc }}</p>
+            <p>Reduction: 0.00</p>
+            <p>TCA: 0.00</p>
+            <p>Service Charges: 0.00 </p>
+            <p>Total TTC: {{ montant_ttc }}</p>
+            <p>Versement: {{ montant_ttc }}</p>
+            <p>Monnaie: 0 </p>
+        </div>
+        <div class="receipt-delivered-to">
+            <p>Delivered to: Jacques Pierre</p>
+        </div>
+        <div class="receipt-footer">
+            <p>Thank you for your purchase!</p>
+        </div>
+    </div>
+</body>
+</html>
